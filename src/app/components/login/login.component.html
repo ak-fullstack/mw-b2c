@@ -1,5 +1,5 @@
-<div class="w-screen h-screen fixed top-0 left-0 bg-[#000000b0] flex justify-center items-center">
-    <div class="md:w-1/2 w-full bg-white flex justify-center items-center px-6 py-12">
+<div class="w-screen h-screen fixed top-0 left-0 bg-[#000000b0] flex justify-center items-center p-3">
+    <div *ngIf="signIn" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12">
         <div class="w-full max-w-md text-center">
           <h2 class="text-2xl font-bold mb-2">Hello Again!</h2>
           <p class="text-gray-600 mb-6">Welcome Back</p>
@@ -7,7 +7,7 @@
 
           </div>
           <p class="py-2 text-gray-500">OR</p>
-          <form [formGroup]="loginForm" (ngSubmit)="verifyOtp()" class="space-y-4">
+          <form [formGroup]="loginForm" (ngSubmit)="verifyPassword()" class="space-y-4">
               <div class="relative">
                   <input
                 type="email"
@@ -18,12 +18,56 @@
               <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="text-red-500 text-sm">
                 Valid email is required.
               </div>
+              </div>
+            
+              <div class="relative">
+                  <input
+                type="password"
+                placeholder="Password"
+                formControlName="password"
+                class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="text-red-500 text-sm">
+                Password is required.
+              </div>
+              </div>
+            
+              <button [disabled]="loginForm.invalid"
+                type="submit"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
+                Login
+              </button>
+              <!-- <a href="#" class="text-sm text-gray-500 hover:underline block mt-2">Forgot Password</a> -->
+            </form>
+
+            <div class="pt-4 text-sm text-gray-600">
+              <p class="cursor-pointer w-fit mx-auto hover:underline" (click)="setValue('c')">Forgot Password?</p>
+            <p class="cursor-pointer pt-2  w-fit mx-auto hover:underline" (click)="setValue('b')">Register</p>
+            </div>
+        </div>
+      </div>
+  
+      <div *ngIf="resetPassword" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12">
+        <div class="w-full max-w-md text-center">
+          <h2 class="text-2xl font-bold mb-2 pb-4">Reset Password</h2>
+    
+          <form *ngIf="!resetOtpVerified" [formGroup]="resetForm" (ngSubmit)="verifyResetOtp()" class="space-y-4">
+              <div class="relative">
+                  <input
+                type="email"
+                placeholder="Email Address"
+                formControlName="email"
+                class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <div *ngIf="resetForm.get('email')?.touched && resetForm.get('email')?.invalid" class="text-red-500 text-sm">
+                Valid email is required.
+              </div>
               <div
         (click)="sendOtp()"
         class="absolute top-[25px] -translate-y-1/2 right-3 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition"
         [ngClass]="{
-          'bg-blue-600': loginForm.get('email')?.valid,
-          'bg-blue-300 pointer-events-none': loginForm.get('email')?.invalid
+          'bg-blue-600': resetForm.get('email')?.valid,
+          'bg-blue-300 pointer-events-none': resetForm.get('email')?.invalid
         }"
       >
         <svg
@@ -45,18 +89,149 @@
                 formControlName="otp"
                 class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <div *ngIf="loginForm.get('otp')?.touched && loginForm.get('otp')?.invalid" class="text-red-500 text-sm">
+              <div *ngIf="resetForm.get('otp')?.touched && resetForm.get('otp')?.invalid" class="text-red-500 text-sm">
                 OTP is required.
               </div>
               </div>
             
-              <button [disabled]="loginForm.invalid"
+              <button [disabled]="resetForm.invalid"
                 type="submit"
                 class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
-                Login
+                Verify OTP
               </button>
               <!-- <a href="#" class="text-sm text-gray-500 hover:underline block mt-2">Forgot Password</a> -->
             </form>
+            <form *ngIf="resetOtpVerified" [formGroup]="newPasswordForm" (ngSubmit)="changePassword()" class="space-y-4">
+              <div class="relative">
+                <input
+              type="password"
+              placeholder="New password"
+              formControlName="newPassword"
+              class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div *ngIf="newPasswordForm.get('newPassword')?.touched && newPasswordForm.get('newPassword')?.invalid" class="text-red-500 text-sm">
+              Enter a Password
+            </div>
+            </div>
+            <div class="relative">
+                <input
+              type="password"
+              placeholder="Re Enter password"
+              formControlName="reenterPassword"
+              class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div *ngIf="newPasswordForm.get('reenterPassword')?.touched && newPasswordForm.get('reenterPassword')?.invalid" class="text-red-500 text-sm">
+              Renter Password
+            </div>
+            <div class="text-red-500 text-sm" *ngIf="newPasswordForm.errors?.['passwordMismatch'] && newPasswordForm.touched">
+              Passwords do not match
+            </div>
+            </div>
+
+            <button [disabled]="newPasswordForm.invalid"
+                type="submit"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
+                Reset Password
+              </button>
+
+          </form>
+          <p class="cursor-pointer w-fit mx-auto pt-3 text-sm text-gray-600" (click)="setValue('a')">Login</p>
+
+            
+        </div>
+      </div>
+
+
+      <div *ngIf="register" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12">
+        <div class="w-full max-w-md text-center">
+          <h2 class="text-2xl font-bold mb-2 pb-4">Register</h2>
+    
+          <form *ngIf="!resetOtpVerified" [formGroup]="registerForm" (ngSubmit)="verifyRegisterOtp()" class="space-y-4">
+              <div class="relative">
+                  <input
+                type="email"
+                placeholder="Email Address"
+                formControlName="email"
+                class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="text-red-500 text-sm">
+                Valid email is required.
+              </div>
+              <div
+        (click)="sendOtp()"
+        class="absolute top-[25px] -translate-y-1/2 right-3 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition"
+        [ngClass]="{
+          'bg-blue-600': registerForm.get('email')?.valid,
+          'bg-blue-300 pointer-events-none': registerForm.get('email')?.invalid
+        }"
+      >
+        <svg
+          class="w-4 h-4 text-white"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+              </div>
+            
+              <div *ngIf="showOtpInput" class="relative">
+                  <input
+                type="password"
+                placeholder="OTP"
+                formControlName="otp"
+                class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <div *ngIf="registerForm.get('otp')?.touched && registerForm.get('otp')?.invalid" class="text-red-500 text-sm">
+                OTP is required.
+              </div>
+              </div>
+            
+              <button [disabled]="registerForm.invalid"
+                type="submit"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
+                Verify OTP
+              </button>
+              <!-- <a href="#" class="text-sm text-gray-500 hover:underline block mt-2">Forgot Password</a> -->
+            </form>
+            <form *ngIf="resetOtpVerified" [formGroup]="newPasswordForm" (ngSubmit)="changePassword()" class="space-y-4">
+              <div class="relative">
+                <input
+              type="password"
+              placeholder="New password"
+              formControlName="newPassword"
+              class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div *ngIf="newPasswordForm.get('newPassword')?.touched && newPasswordForm.get('newPassword')?.invalid" class="text-red-500 text-sm">
+              Enter a Password
+            </div>
+            </div>
+            <div class="relative">
+                <input
+              type="password"
+              placeholder="Re Enter password"
+              formControlName="reenterPassword"
+              class="w-full px-4 py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div *ngIf="newPasswordForm.get('reenterPassword')?.touched && newPasswordForm.get('reenterPassword')?.invalid" class="text-red-500 text-sm">
+              Renter Password
+            </div>
+            <div class="text-red-500 text-sm" *ngIf="newPasswordForm.errors?.['passwordMismatch'] && newPasswordForm.touched">
+              Passwords do not match
+            </div>
+            </div>
+
+            <button [disabled]="newPasswordForm.invalid"
+                type="submit"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
+                Reset Password
+              </button>
+
+          </form>
+          <p class="cursor-pointer w-fit mx-auto pt-3 text-sm text-gray-600" (click)="setValue('a')">Login</p>
+
             
         </div>
       </div>

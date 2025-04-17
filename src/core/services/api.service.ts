@@ -51,5 +51,20 @@ export class ApiService {
     return this.http.post(api.customer.verifyOauthToken, payload);
   }
 
+  sendCustomerEmailOtp(payload:any): Observable<any> {
+    return this.http.post(api.customer.sendCustomeEmailOtp, payload);
+  }
+
+  verifyCustomerEmailOtp(payload:any): Observable<any> {
+    return this.http.post(api.customer.verifyCustomerEmailOtp, payload);
+  }
+
+  createCustomer(payload:any): Observable<any> {
+    return this.http.post(api.customer.createCustomer, payload);
+  }
+
+  customerLogin(payload:any): Observable<any> {
+    return this.http.post(api.customer.loginCustomer, payload);
+  }
 
 }

@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { LoginService } from '../../../core/services/login.service';
 import { environment } from '../../../environments/environment';
 import { ApiService } from '../../../core/services/api.service';
+import { Router } from '@angular/router';
 
 declare var google: any;
 
@@ -17,16 +18,65 @@ declare var google: any;
 export class LoginComponent implements OnInit {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)])
+  });
+
+  newPasswordForm = new FormGroup({
+    newPassword: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)]),
+    reenterPassword: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)])
+  }, { validators: this.passwordMatchValidator });
+
+   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const newPassword = control.get('newPassword')?.value;
+    const reenterPassword = control.get('reenterPassword')?.value;
+  
+    return newPassword === reenterPassword ? null : { passwordMismatch: true };
+  }
+
+  resetForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    otp: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)]),
+  });
+
+  registerForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
     otp: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)])
   });
 
-  private googleAuth: any;
+  signIn = true;
+  resetPassword = false;
+  register = false;
+
+  setValue(target: 'a' | 'b' | 'c') {
+    this.signIn = target === 'a' ||  false;
+    this.register = target === 'b' || false;
+    this.resetPassword = target === 'c' || false;
+
+    this.registerForm.reset();
+    this.resetForm.reset();
+    this.loginForm.reset();
+
+    if(target==='a'){
+      setTimeout(() => {
+        this.renderGoogleSignIn();
+    }, 1);
+    }
+    
+  }
+
+  renderGoogleSignIn(){
+    google.accounts.id.renderButton(
+      document.getElementById('google-signin-btn'),
+      { theme: 'outline', size: 'large' }
+    );
+  }
+
 
 
   showOtpInput = false;
 
 
-  constructor(private fb: FormBuilder, private loginService: LoginService,private apiService:ApiService) {
+  constructor(private fb: FormBuilder, private loginService: LoginService,private apiService:ApiService, private router:Router) {
   }
 
   ngOnInit(): void {
@@ -42,10 +92,7 @@ export class LoginComponent implements OnInit {
       });
 
       // Render the Google Sign-In button
-      google.accounts.id.renderButton(
-        document.getElementById('google-signin-btn'),
-        { theme: 'outline', size: 'large' }
-      );
+     this.renderGoogleSignIn();
     }).catch(err => {
       console.error("Google API script failed to load", err);
     });
@@ -57,23 +104,23 @@ export class LoginComponent implements OnInit {
     const payload = {
       email: this.loginForm.get('email')?.value,
     };
-    this.showOtpInput=true;
-
-    // this.apiService.sendOtp(payload).subscribe({
-    //   next: (res) => {
-    //     this.showOtpInput=true;
-    //   }
-    // })
+    this.apiService.sendOtp(payload).subscribe({
+      next: (res) => {
+        this.showOtpInput=true;
+      }
+    })
 }
 
-  verifyOtp() {
-    if(this.loginForm.invalid){
+resetOtpVerified=false;
+  verifyResetOtp() {
+    if(this.resetForm.invalid){
       return;
     }
     const payload = {
-      email: this.loginForm.get('email')?.value,
-      otp: this.loginForm.get('otp')?.value
+      email: this.resetForm.get('email')?.value,
+      otp: this.resetForm.get('otp')?.value
     };
+    this.resetOtpVerified=true;
     // this.apiService.verifyOtp(payload).subscribe({
     //   next: (res) => {
     //     localStorage.setItem('token', res.access_token);
@@ -82,9 +129,48 @@ export class LoginComponent implements OnInit {
     //   }
     // })
   }
-  close() {
-    this.loginService.hide(); 
+
+  verifyRegisterOtp(){
+    if(this.registerForm.invalid){
+      return;
+    }
+    const payload = {
+      email: this.registerForm.get('email')?.value,
+      otp: this.registerForm.get('otp')?.value
+    };
+    this.resetOtpVerified=true;
+
+    // this.apiService.verifyOtp(payload).subscribe({
+    //   next: (res) => {
+    //     localStorage.setItem('token', res.access_token);
+    //     localStorage.setItem('role', res.role.roleName);
+    //     this.router.navigate(['']); 
+    //   }
+    // })
   }
+
+  changePassword(){
+
+  }
+
+  verifyPassword() {
+    if(this.loginForm.invalid){
+      return;
+    }
+    const payload = {
+      email: this.loginForm.get('email')?.value,
+      password: this.loginForm.get('password')?.value
+    };
+    this.apiService.customerLogin(payload).subscribe({
+      next: (res) => {
+        localStorage.setItem('token', res.access_token);
+        localStorage.setItem('role', res.role.roleName);
+        this.loginService.hide(); 
+        this.router.navigate(['cart']); 
+      }
+    })
+  }
+
 
   
 
