@@ -1,1 +1,36 @@
-<p>home works!</p>
+<div class="flex flex-wrap">
+   <div *ngFor="let item of groupedProducts" class="p-4 w-3/12 bg-white rounded-2xl shadow-md">
+  <!-- Product Images -->
+  <div class="w-full flex gap-2 overflow-x-auto pb-2">
+    <div *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images">
+      <img [src]="image.imageUrl" class="w-16 h-16 object-cover rounded-md border" />
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="mt-3">
+    <h2 class="text-lg font-semibold text-gray-800 truncate">{{ item.product.name }}</h2>
+    <p class="text-sm text-gray-600">{{ item.product.description }}</p>
+  </div>
+
+  <!-- Color Options -->
+  <div *ngIf="item.product.has_colors"  class="flex gap-2 mt-3">
+    <div
+      *ngFor="let color of item.colors"
+      class="w-5 h-5 rounded-full border shadow"
+      [ngStyle]="{ 'background-color': color.hexCode }"
+    ></div>
+  </div>
+
+  <!-- Size Options -->
+  <div *ngIf="item.product.has_sizes" class="flex gap-3 mt-3 flex-wrap">
+    <div
+      *ngFor="let size of item.colors[item.selectedColorIndex]?.sizes"
+      class="px-2 py-1 bg-gray-100 rounded-md text-sm font-medium text-gray-700 shadow"
+    >
+      {{ size.label }}
+    </div>
+  </div>
+</div>
+
+</div>

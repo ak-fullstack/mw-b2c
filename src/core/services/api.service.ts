@@ -10,49 +10,13 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  getUserRoles(): Observable<any> {
-    return this.http.get(api.admin.getRoles);
-  }
-
-  getAllPermissions(): Observable<any> {
-    return this.http.get(api.admin.getPermissions);
-  }
-
-
-  sendOtp(payload:any):Observable<any>{
-    return this.http.post(api.admin.sendOtp, payload);
-  }
-
-  verifyOtp(payload:any):Observable<any>{
-    return this.http.post(api.admin.verifyOtp, payload);
-  }
-
-  createRole(payload:any):Observable<any>{
-    return this.http.post(api.admin.createRole, payload);
-  }
-
-  getAllRolesWithPermissions(): Observable<any> {
-    return this.http.get(api.admin.getallRolesWithPermissions);
-  }
-
-  uploadUserProfile(payload:any):Observable<any>{
-    return this.http.post(api.admin.uploadUserImage, payload);
-  }
-
-  addNewUser(payload:any):Observable<any>{
-    return this.http.post(api.admin.addNewUser, payload);
-  } 
-
-  getAllUsers(): Observable<any> {
-    return this.http.get(api.admin.getAllUsers);
-  }
 
   verifyOauthToken(payload:any): Observable<any> {
     return this.http.post(api.customer.verifyOauthToken, payload);
   }
 
   sendCustomerEmailOtp(payload:any): Observable<any> {
-    return this.http.post(api.customer.sendCustomeEmailOtp, payload);
+    return this.http.post(api.customer.sendCustomerEmailOtpForRegistration, payload);
   }
 
   verifyCustomerEmailOtp(payload:any): Observable<any> {
@@ -65,6 +29,18 @@ export class ApiService {
 
   customerLogin(payload:any): Observable<any> {
     return this.http.post(api.customer.loginCustomer, payload);
+  }
+
+  sendResetOtp(payload:any): Observable<any> {
+    return this.http.post(api.customer.sendResetOtp, payload);
+  }
+
+  updateCustomer(payload:any): Observable<any> {
+    return this.http.post(api.customer.updateCustomer, payload);
+  }
+  
+  getLatestStockPerProduct(): Observable<any> {
+    return this.http.get(api.product.getLatestStockPerProduct);
   }
 
 }

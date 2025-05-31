@@ -17,9 +17,14 @@ export const api = {
   },
   customer: {
     verifyOauthToken: `${url}/auth/verify-oauth-token`,
-    sendCustomeEmailOtp: `${url}/auth/send-customer-email-otp`,
+    sendCustomerEmailOtpForRegistration: `${url}/auth/register/send-customer-email-otp`,
     verifyCustomerEmailOtp: `${url}/auth/verify-customer-email-otp`,
     createCustomer : url+'/customer/create-customer',
-    loginCustomer : url+'/auth/customer-login'
+    loginCustomer : url+'/auth/customer-login',
+    sendResetOtp:url+'/auth/send-reset-otp',
+    updateCustomer:url+'/customer/update-customer'
+  },
+  product:{
+    getLatestStockPerProduct: `${url}/stocks/latest-by-product`,
   }
 };

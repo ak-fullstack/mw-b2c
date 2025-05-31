@@ -1,6 +1,6 @@
 export const environment = {
    prod:true,
-   apiBaseUrl: 'https://mw-dev-453920.uc.r.appspot.com/api',
+   apiBaseUrl: 'https://mw-admin-136e3.uc.r.appspot.com/api',
    googleClientId:'509406744774-mlgslvgav2f9u73tjd9k0796c16s15j3.apps.googleusercontent.com',
 
    firebaseConfig : {

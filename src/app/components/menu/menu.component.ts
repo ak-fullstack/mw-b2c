@@ -10,7 +10,7 @@ import { LoginService } from '../../../core/services/login.service';
 export class MenuComponent {
 
   constructor(private loginService: LoginService) {
-    this.loginService.show();
+    // this.loginService.show();
 
   }
   login() {

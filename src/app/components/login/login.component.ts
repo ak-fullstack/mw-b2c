@@ -21,10 +21,7 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)])
   });
 
-  newPasswordForm = new FormGroup({
-    newPassword: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)]),
-    reenterPassword: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)])
-  }, { validators: this.passwordMatchValidator });
+
 
    passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const newPassword = control.get('newPassword')?.value;
@@ -43,35 +40,20 @@ export class LoginComponent implements OnInit {
     otp: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(15)])
   });
 
+  newPasswordForm = new FormGroup({
+    newPassword: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+      Validators.maxLength(15),
+      Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/)
+    ]),
+    reenterPassword: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(15)])
+  }, { validators: this.passwordMatchValidator });
+
   signIn = true;
   resetPassword = false;
   register = false;
-
-  setValue(target: 'a' | 'b' | 'c') {
-    this.signIn = target === 'a' ||  false;
-    this.register = target === 'b' || false;
-    this.resetPassword = target === 'c' || false;
-
-    this.registerForm.reset();
-    this.resetForm.reset();
-    this.loginForm.reset();
-
-    if(target==='a'){
-      setTimeout(() => {
-        this.renderGoogleSignIn();
-    }, 1);
-    }
-    
-  }
-
-  renderGoogleSignIn(){
-    google.accounts.id.renderButton(
-      document.getElementById('google-signin-btn'),
-      { theme: 'outline', size: 'large' }
-    );
-  }
-
-
+  otpVerified=false;
 
   showOtpInput = false;
 
@@ -97,37 +79,75 @@ export class LoginComponent implements OnInit {
       console.error("Google API script failed to load", err);
     });
   }
+
+  
+  setValue(target: 'a' | 'b' | 'c') {
+    this.signIn = target === 'a' ||  false;
+    this.register = target === 'b' || false;
+    this.resetPassword = target === 'c' || false;
+
+    this.registerForm.reset();
+    this.resetForm.reset();
+    this.loginForm.reset();
+    this.otpVerified=false;
+    this.newPasswordForm.reset();
+
+    if(target==='a'){
+      setTimeout(() => {
+        this.renderGoogleSignIn();
+    }, 1);
+    }
+    
+  }
+
+  
+  renderGoogleSignIn(){
+    google.accounts.id.renderButton(
+      document.getElementById('google-signin-btn'),
+      { theme: 'outline', size: 'large' }
+    );
+  }
   
 
-  sendOtp(){
- 
+  sendOtpForRegistration(){
     const payload = {
-      email: this.loginForm.get('email')?.value,
+      email: this.registerForm.get('email')?.value,
     };
-    this.apiService.sendOtp(payload).subscribe({
+    this.apiService.sendCustomerEmailOtp(payload).subscribe({
       next: (res) => {
         this.showOtpInput=true;
       }
     })
 }
 
-resetOtpVerified=false;
+sendOtpForReset(){
+  const payload = {
+    email: this.resetForm.get('email')?.value,
+  };
+  this.apiService.sendResetOtp(payload).subscribe({
+    next: (res) => {
+      this.showOtpInput=true;
+    }
+  })
+}
+
+
   verifyResetOtp() {
     if(this.resetForm.invalid){
       return;
     }
     const payload = {
       email: this.resetForm.get('email')?.value,
-      otp: this.resetForm.get('otp')?.value
+      otp: this.resetForm.get('otp')?.value,
+      purpose:'update-customer'
     };
-    this.resetOtpVerified=true;
-    // this.apiService.verifyOtp(payload).subscribe({
-    //   next: (res) => {
-    //     localStorage.setItem('token', res.access_token);
-    //     localStorage.setItem('role', res.role.roleName);
-    //     this.router.navigate(['']); 
-    //   }
-    // })
+
+    this.apiService.verifyCustomerEmailOtp(payload).subscribe({
+      next: (res) => {
+        localStorage.setItem('token', res.access_token);
+        this.otpVerified=true;
+      }
+    })
   }
 
   verifyRegisterOtp(){
@@ -136,21 +156,39 @@ resetOtpVerified=false;
     }
     const payload = {
       email: this.registerForm.get('email')?.value,
-      otp: this.registerForm.get('otp')?.value
+      otp: this.registerForm.get('otp')?.value,
+      purpose:'register'
     };
-    this.resetOtpVerified=true;
 
-    // this.apiService.verifyOtp(payload).subscribe({
-    //   next: (res) => {
-    //     localStorage.setItem('token', res.access_token);
-    //     localStorage.setItem('role', res.role.roleName);
-    //     this.router.navigate(['']); 
-    //   }
-    // })
+    this.apiService.verifyCustomerEmailOtp(payload).subscribe({
+      next: (res) => {
+        localStorage.setItem('token', res.access_token);
+        this.otpVerified=true;
+      }
+    })
   }
 
   changePassword(){
+    const payload={
+      password:this.newPasswordForm.get('newPassword')?.value
+    }      
+    this.apiService.updateCustomer(payload).subscribe({
+      next:()=>{
+        this.setValue('a');
+      }
+    })
+  }
 
+  createCustomer(){
+      const payload={
+        password:this.newPasswordForm.get('newPassword')?.value
+      }      
+      this.apiService.createCustomer(payload).subscribe({
+        next:()=>{
+          this.setValue('a');
+        }
+      })
+      
   }
 
   verifyPassword() {
@@ -207,7 +245,7 @@ resetOtpVerified=false;
 
           localStorage.setItem('customer_token', access_token);
           localStorage.setItem('customer-role', role);
-          alert('all-done')
+          this.router.navigate(['cart'])
         }
       })
   }
