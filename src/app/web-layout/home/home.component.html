@@ -1,36 +1,64 @@
-<div class="flex flex-wrap">
-   <div *ngFor="let item of groupedProducts" class="p-4 w-3/12 bg-white rounded-2xl shadow-md">
-  <!-- Product Images -->
-  <div class="w-full flex gap-2 overflow-x-auto pb-2">
-    <div *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images">
-      <img [src]="image.imageUrl" class="w-16 h-16 object-cover rounded-md border" />
+<div class="flex flex-wrap gap-6 p-10 bg-gray-50">
+  <div *ngFor="let item of groupedProducts"
+    class="w-full sm:w-5/12 md:w-1/3 lg:w-1/4 bg-white rounded-2xl shadow-md overflow-hidden flex flex-col justify-between transition-transform hover:scale-[1.02]">
+    <!-- Images Carousel -->
+    <div class="pb-6">
+      <div class="w-full flex gap-2 overflow-x-auto pb-2">
+        <div class="min-w-full h-[300px] overflow-hidden flex items-center justify-center rounded-lg bg-gray-100"
+          *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images">
+          <img [src]="image.imageUrl" class="max-h-full max-w-full object-contain rounded-md" />
+        </div>
+      </div>
+
+      <!-- Product Title & Description -->
+      <div class="mt-3 px-4">
+        <h2 class="text-lg font-semibold text-gray-800 truncate">
+          {{ item.product.name }}
+        </h2>
+        <p class="text-sm text-gray-500 line-clamp-2">
+          {{ item.product.description }}
+        </p>
+      </div>
+
+      <!-- Colors & Sizes -->
+      <div class="flex flex-col items-start px-4 mt-4">
+        <div *ngIf="item.product.has_colors" class="flex gap-2 items-center mb-3">
+          <span class="text-xs text-gray-500">Colors:</span>
+          <div (click)="item.selectedColorIndex = colorIndex;item.selectedSizeIndex=0" *ngFor="let color of item.colors; let colorIndex = index"
+            class="p-0.5 rounded-full bg-white ring-offset-1"
+            [ngStyle]="colorIndex === item.selectedColorIndex ? { boxShadow: '0 0 0 1px ' + color.hexCode } : {}">
+            <div class="w-5 h-5 rounded-full cursor-pointer" [ngStyle]="{ 'background-color': color.hexCode }"
+              [ngClass]="{
+      'border-gray-300': colorIndex !== item.selectedColorIndex
+    }"></div>
+          </div>
+        </div>
+
+        <div *ngIf="item.product.has_sizes" class="flex flex-wrap gap-2">
+          <p (click)="item.selectedSizeIndex = sizeIndex" *ngFor="let size of item.colors[item.selectedColorIndex]?.sizes; let sizeIndex = index"
+            class="w-8 h-8 rounded-md text-sm font-medium border text-gray-700 shadow text-center flex items-center justify-center cursor-pointer"
+            [ngClass]="{
+              'bg-blue-500 text-white border-blue-600': sizeIndex === item.selectedSizeIndex,
+              'bg-white border-gray-300': sizeIndex !== item.selectedSizeIndex
+            }">
+            {{ size.label.toUpperCase() }}
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Product Info -->
-  <div class="mt-3">
-    <h2 class="text-lg font-semibold text-gray-800 truncate">{{ item.product.name }}</h2>
-    <p class="text-sm text-gray-600">{{ item.product.description }}</p>
+    <!-- Button -->
+    <button (click)="addToCart(item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex])" *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].available > 0 && !item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].addedToCart"
+      class="w-full bg-green-500 text-white py-3 font-semibold hover:bg-green-600 transition">
+      Add to Cart
+    </button>
+    <button (click)="removeFromCart(item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex])" *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].available > 0 && item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].addedToCart"
+      class="w-full bg-red-200 text-red-700 py-3 font-semibold  transition">
+      Remove
+    </button>
+    <button *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].available < 1"
+      class="w-full bg-gray-300 text-gray-600 py-3 font-semibold cursor-not-allowed">
+      Out of Stock
+    </button>
   </div>
-
-  <!-- Color Options -->
-  <div *ngIf="item.product.has_colors"  class="flex gap-2 mt-3">
-    <div
-      *ngFor="let color of item.colors"
-      class="w-5 h-5 rounded-full border shadow"
-      [ngStyle]="{ 'background-color': color.hexCode }"
-    ></div>
-  </div>
-
-  <!-- Size Options -->
-  <div *ngIf="item.product.has_sizes" class="flex gap-3 mt-3 flex-wrap">
-    <div
-      *ngFor="let size of item.colors[item.selectedColorIndex]?.sizes"
-      class="px-2 py-1 bg-gray-100 rounded-md text-sm font-medium text-gray-700 shadow"
-    >
-      {{ size.label }}
-    </div>
-  </div>
-</div>
-
 </div>

@@ -11,9 +11,11 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
 
-  verifyOauthToken(payload:any): Observable<any> {
-    return this.http.post(api.customer.verifyOauthToken, payload);
-  }
+  verifyOauthToken(payload: any): Observable<any> {
+  return this.http.post(api.customer.verifyOauthToken, payload, {
+    withCredentials: true, 
+  });
+}
 
   sendCustomerEmailOtp(payload:any): Observable<any> {
     return this.http.post(api.customer.sendCustomerEmailOtpForRegistration, payload);
@@ -27,9 +29,11 @@ export class ApiService {
     return this.http.post(api.customer.createCustomer, payload);
   }
 
-  customerLogin(payload:any): Observable<any> {
-    return this.http.post(api.customer.loginCustomer, payload);
-  }
+customerLogin(payload: any): Observable<any> {
+  return this.http.post(api.customer.loginCustomer, payload, {
+    withCredentials: true,
+  });
+}
 
   sendResetOtp(payload:any): Observable<any> {
     return this.http.post(api.customer.sendResetOtp, payload);
@@ -40,7 +44,11 @@ export class ApiService {
   }
   
   getLatestStockPerProduct(): Observable<any> {
-    return this.http.get(api.product.getLatestStockPerProduct);
+    return this.http.get(api.product.getLatestStockPerProduct,{});
+  }
+
+  getStockbyIds(payload: any): Observable<any> {
+    return this.http.post(api.product.getStocksByIds, payload);
   }
 
 }

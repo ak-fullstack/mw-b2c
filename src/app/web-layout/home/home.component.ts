@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +16,7 @@ export class HomeComponent implements OnInit {
   groupedProducts: any[] = [];
   selectedColorIndex: number = 0;
   selectedSizeIndex: number = 0;
-    constructor(private apiService: ApiService) { }
+    constructor(private apiService: ApiService,private cartService :CartService) { }
   ngOnInit(): void {
     this.getLatestStockPerProduct();
   }
@@ -90,4 +91,18 @@ groupStockByProduct(stockList: any[]) {
   
   
 }
+
+addToCart(selectedItem: any) {
+  selectedItem.addedToCart=true;
+    
+  const {stockId} = selectedItem;
+    this.cartService.addToCart({stockId,quantity:1});
+  }
+
+  removeFromCart(selectedItem: any) {
+    selectedItem.addedToCart=false;
+    const {stockId} = selectedItem;
+    this.cartService.removeFromCart({stockId,quantity:1});
+  }
+
 }

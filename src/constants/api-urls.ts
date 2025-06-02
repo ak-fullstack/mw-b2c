@@ -26,5 +26,6 @@ export const api = {
   },
   product:{
     getLatestStockPerProduct: `${url}/stocks/latest-by-product`,
+    getStocksByIds: `${url}/stocks/get-stocks-by-ids`,
   }
 };
