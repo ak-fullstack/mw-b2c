@@ -94,7 +94,6 @@ groupStockByProduct(stockList: any[]) {
 
 addToCart(selectedItem: any) {
   selectedItem.addedToCart=true;
-    
   const {stockId} = selectedItem;
     this.cartService.addToCart({stockId,quantity:1});
   }

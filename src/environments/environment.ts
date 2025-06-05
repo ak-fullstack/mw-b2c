@@ -13,6 +13,6 @@ firebaseConfig : {
     messagingSenderId: "188666963435",
     appId: "1:188666963435:web:fc4c5f02c6e50e9e1d65ae",
     measurementId: "G-FKBT2XQKDK"
-  }
-
+  },
+razorPaykeyId: 'rzp_test_3Eh0pmacsH3Row',
 }

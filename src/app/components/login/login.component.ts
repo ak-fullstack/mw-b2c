@@ -23,10 +23,10 @@ export class LoginComponent implements OnInit {
 
 
 
-   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const newPassword = control.get('newPassword')?.value;
     const reenterPassword = control.get('reenterPassword')?.value;
-  
+
     return newPassword === reenterPassword ? null : { passwordMismatch: true };
   }
 
@@ -53,12 +53,12 @@ export class LoginComponent implements OnInit {
   signIn = true;
   resetPassword = false;
   register = false;
-  otpVerified=false;
+  otpVerified = false;
 
   showOtpInput = false;
 
 
-  constructor(private fb: FormBuilder, private loginService: LoginService,private apiService:ApiService, private router:Router) {
+  constructor(private fb: FormBuilder, private loginService: LoginService, private apiService: ApiService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -74,125 +74,125 @@ export class LoginComponent implements OnInit {
       });
 
       // Render the Google Sign-In button
-     this.renderGoogleSignIn();
+      this.renderGoogleSignIn();
     }).catch(err => {
       console.error("Google API script failed to load", err);
     });
   }
 
-  
+
   setValue(target: 'a' | 'b' | 'c') {
-    this.signIn = target === 'a' ||  false;
+    this.signIn = target === 'a' || false;
     this.register = target === 'b' || false;
     this.resetPassword = target === 'c' || false;
 
     this.registerForm.reset();
     this.resetForm.reset();
     this.loginForm.reset();
-    this.otpVerified=false;
+    this.otpVerified = false;
     this.newPasswordForm.reset();
 
-    if(target==='a'){
+    if (target === 'a') {
       setTimeout(() => {
         this.renderGoogleSignIn();
-    }, 1);
+      }, 1);
     }
-    
+
   }
 
-  
-  renderGoogleSignIn(){
+
+  renderGoogleSignIn() {
     google.accounts.id.renderButton(
       document.getElementById('google-signin-btn'),
       { theme: 'outline', size: 'large' }
     );
   }
-  
 
-  sendOtpForRegistration(){
+
+  sendOtpForRegistration() {
     const payload = {
       email: this.registerForm.get('email')?.value,
     };
     this.apiService.sendCustomerEmailOtp(payload).subscribe({
       next: (res) => {
-        this.showOtpInput=true;
+        this.showOtpInput = true;
       }
     })
-}
+  }
 
-sendOtpForReset(){
-  const payload = {
-    email: this.resetForm.get('email')?.value,
-  };
-  this.apiService.sendResetOtp(payload).subscribe({
-    next: (res) => {
-      this.showOtpInput=true;
-    }
-  })
-}
+  sendOtpForReset() {
+    const payload = {
+      email: this.resetForm.get('email')?.value,
+    };
+    this.apiService.sendResetOtp(payload).subscribe({
+      next: (res) => {
+        this.showOtpInput = true;
+      }
+    })
+  }
 
 
   verifyResetOtp() {
-    if(this.resetForm.invalid){
+    if (this.resetForm.invalid) {
       return;
     }
     const payload = {
       email: this.resetForm.get('email')?.value,
       otp: this.resetForm.get('otp')?.value,
-      purpose:'update-customer'
+      purpose: 'update-customer'
     };
 
     this.apiService.verifyCustomerEmailOtp(payload).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.access_token);
-        this.otpVerified=true;
+        this.otpVerified = true;
       }
     })
   }
 
-  verifyRegisterOtp(){
-    if(this.registerForm.invalid){
+  verifyRegisterOtp() {
+    if (this.registerForm.invalid) {
       return;
     }
     const payload = {
       email: this.registerForm.get('email')?.value,
       otp: this.registerForm.get('otp')?.value,
-      purpose:'register'
+      purpose: 'register'
     };
 
     this.apiService.verifyCustomerEmailOtp(payload).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.access_token);
-        this.otpVerified=true;
+        this.otpVerified = true;
       }
     })
   }
 
-  changePassword(){
-    const payload={
-      password:this.newPasswordForm.get('newPassword')?.value
-    }      
+  changePassword() {
+    const payload = {
+      password: this.newPasswordForm.get('newPassword')?.value
+    }
     this.apiService.updateCustomer(payload).subscribe({
-      next:()=>{
+      next: () => {
         this.setValue('a');
       }
     })
   }
 
-  createCustomer(){
-      const payload={
-        password:this.newPasswordForm.get('newPassword')?.value
-      }      
-      this.apiService.createCustomer(payload).subscribe({
-        next:()=>{
-          this.setValue('a');
-        }
-      })
-      
+  createCustomer() {
+    const payload = {
+      password: this.newPasswordForm.get('newPassword')?.value
+    }
+    this.apiService.createCustomer(payload).subscribe({
+      next: () => {
+        this.setValue('a');
+      }
+    })
+
   }
 
   verifyPassword() {
-    if(this.loginForm.invalid){
+    if (this.loginForm.invalid) {
       return;
     }
     const payload = {
@@ -201,16 +201,13 @@ sendOtpForReset(){
     };
     this.apiService.customerLogin(payload).subscribe({
       next: (res) => {
-        localStorage.setItem('token', res.access_token);
-        localStorage.setItem('role', res.role.roleName);
-        this.loginService.hide(); 
-        this.router.navigate(['cart']); 
+        this.redirectAferLogin();
       }
     })
   }
 
 
-  
+
 
   loadGoogleScript(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -236,17 +233,20 @@ sendOtpForReset(){
   }
 
   sendGoogleTokenToBackend(idToken: string) {
-    const payload={
-      token:idToken
+    const payload = {
+      token: idToken
     }
-      this.apiService.verifyOauthToken(payload).subscribe({
-        next:(res)=>{
-          const { access_token, role } = res;
+    this.apiService.verifyOauthToken(payload).subscribe({
+      next: (res) => {
+          this.redirectAferLogin();
+      }
+    })
+  }
 
-          localStorage.setItem('customer_token', access_token);
-          localStorage.setItem('customer-role', role);
-          this.router.navigate(['cart'])
-        }
-      })
+  redirectAferLogin(){
+//     const currentUrl = this.router.url;
+//   this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+//   this.router.navigateByUrl(currentUrl);
+// });
   }
 }

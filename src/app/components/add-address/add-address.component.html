@@ -1,0 +1,82 @@
+<!-- address-form.component.html -->
+<div class="w-full mx-auto bg-white shadow-md rounded-md max-h-[700px] overflow-y-auto hide-scrollbar relative">
+  <div (click)="close()" class="pt-3 text-end pe-3 cursor-pointer">
+    close
+  </div>
+  <h2 class="text-2xl font-semibold text-center sticky top-0 bg-white pt-4 pb-3 min-w-[400px]">Create Address</h2>
+
+  <form [formGroup]="addressForm" (ngSubmit)="onSubmit()" class="p-6">
+
+    <!-- Street Address -->
+    <div class="mb-4">
+      <label for="streetAddress" class="block text-sm font-medium text-gray-700">Street Address</label>
+      <input autocomplete="off" 
+        id="streetAddress" 
+        formControlName="streetAddress" 
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+        type="text" 
+        required
+      />
+      <div *ngIf="control.streetAddress.touched && control.streetAddress.invalid" class="text-red-500 text-sm mt-2">
+        <div *ngIf="control.streetAddress.hasError('required')">Street Address is required.</div>
+      </div>
+    </div>
+
+    <!-- City -->
+    <div class="mb-4">
+      <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+      <input autocomplete="off"
+        id="city" 
+        formControlName="city" 
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+        type="text" 
+        required
+      />
+      <div *ngIf="control.city.touched && control.city.invalid" class="text-red-500 text-sm mt-2">
+        <div *ngIf="control.city.hasError('required')">City is required.</div>
+      </div>
+    </div>
+
+    <!-- State -->
+    <div class="mb-4">
+      <label for="state" class="block text-sm font-medium text-gray-700">State</label>
+      <select autocomplete="off"
+        id="state" 
+        formControlName="state" 
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+        required
+      >
+        <option [ngValue]="null">Select State</option>
+        <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+      </select>
+      <div *ngIf="control.state.touched && control.state.invalid" class="text-red-500 text-sm mt-2">
+        <div *ngIf="control.state.hasError('required')">State is required.</div>
+      </div>
+    </div>
+
+    <!-- Pincode -->
+    <div class="mb-4">
+      <label for="pincode" class="block text-sm font-medium text-gray-700">Pincode</label>
+      <input  autocomplete="off"
+        id="pincode" 
+        formControlName="pincode" 
+        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+        type="number" 
+        required 
+        pattern="^[0-9]{6}$" 
+      />
+      <div *ngIf="control.pincode.touched && control.pincode.invalid" class="text-red-500 text-sm mt-2">
+        <div *ngIf="control.pincode.hasError('required')">Pincode is required.</div>
+        <div *ngIf="control.pincode.hasError('pattern')">Pincode must be 6 digits.</div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-6">
+      <button [disabled]="addressForm.invalid" type="submit" class="w-full px-4 py-2 bg-blue-600 disabled:bg-blue-300 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        Submit Address
+      </button>
+    </div>
+
+  </form>
+</div>

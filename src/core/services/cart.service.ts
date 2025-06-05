@@ -5,26 +5,44 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CartService {
-  private cartItemsSubject = new BehaviorSubject<any[]>([]);
+  private cartKey = 'cart-items';
+  private cartItemsSubject = new BehaviorSubject<any[]>(this.loadCartFromStorage());
   cartItems$ = this.cartItemsSubject.asObservable();
 
-  private items: any[] = [];
+  private items: any[] = this.loadCartFromStorage();
 
- addToCart(item: any) {
-  const alreadyExists = this.items.some(existing => existing.stockId === item.stockId);
-  
-  if (!alreadyExists) {
-    this.items.push(item);
-    this.cartItemsSubject.next(this.items);
-  } else {
-    console.log('Item already in cart:', item.stockId);
+  private loadCartFromStorage(): any[] {
+    const data = localStorage.getItem(this.cartKey);
+    return data ? JSON.parse(data) : [];
   }
-}
 
-removeFromCart(item: any) {
-  this.items = this.items.filter(existing => existing.stockId !== item.stockId);
-  this.cartItemsSubject.next(this.items);
-}
+  private updateStorage() {
+    localStorage.setItem(this.cartKey, JSON.stringify(this.items));
+  }
+
+  addToCart(item: any) {
+    const alreadyExists = this.items.some(existing => existing.stockId === item.stockId);
+
+    if (!alreadyExists) {
+      this.items.push(item);
+      this.updateStorage();
+      this.cartItemsSubject.next([...this.items]);
+    } else {
+      console.log('Item already in cart:', item.stockId);
+    }
+  }
+
+  removeFromCart(item: any) {
+    console.log(item);
+    console.log(this.items);
+    
+    
+    this.items = this.items.filter(existing => existing.stockId !== item.stockId);
+    console.log(this.items);
+    
+    this.updateStorage();
+    this.cartItemsSubject.next([...this.items]);
+  }
 
   getItems() {
     return [...this.items];
@@ -32,6 +50,7 @@ removeFromCart(item: any) {
 
   clearCart() {
     this.items = [];
-    this.cartItemsSubject.next(this.items);
+    localStorage.removeItem(this.cartKey);
+    this.cartItemsSubject.next([]);
   }
 }

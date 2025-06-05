@@ -51,4 +51,15 @@ customerLogin(payload: any): Observable<any> {
     return this.http.post(api.product.getStocksByIds, payload);
   }
 
+  getMyProfile(): Observable<any> {
+    return this.http.get(api.customer.getProfile);
+  }
+
+  addCustomerAddress(payload: any): Observable<any> {
+    return this.http.post(api.customer.address, payload);
+  }
+
+  getAllStates(): Observable<any> {
+    return this.http.get(api.customer.getAllStates);
+  }
 }

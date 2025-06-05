@@ -19,7 +19,6 @@ export class MenuComponent {
   ngOnInit(): void {
     this.cartService.cartItems$.subscribe(items => {
       this.cartItems = items;
-      console.log(this.cartItems);
       
     });
   }

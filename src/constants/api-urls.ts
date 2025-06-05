@@ -22,7 +22,10 @@ export const api = {
     createCustomer : url+'/customer/create-customer',
     loginCustomer : url+'/auth/customer-login',
     sendResetOtp:url+'/auth/send-reset-otp',
-    updateCustomer:url+'/customer/update-customer'
+    updateCustomer:url+'/customer/update-customer',
+    getProfile:url+'/customer/me',
+    address:url+'/customer-address',
+    getAllStates: `${url}/customer-address/get-all-states`,
   },
   product:{
     getLatestStockPerProduct: `${url}/stocks/latest-by-product`,
