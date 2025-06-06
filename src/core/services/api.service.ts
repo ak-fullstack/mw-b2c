@@ -62,4 +62,8 @@ customerLogin(payload: any): Observable<any> {
   getAllStates(): Observable<any> {
     return this.http.get(api.customer.getAllStates);
   }
+
+  logout(): Observable<any> {
+    return this.http.post(api.customer.logout, {});
+  }
 }

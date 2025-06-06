@@ -20,7 +20,7 @@
     {{ cartItems.length }}
   </div>
 </div>
-     <button (click)="login()" class="bg-black px-3 rounded-md text-white cursor-pointer">Login</button>
+     <button (click)="isLoggedIn?logout():login()" class="bg-black px-3 rounded-md text-white cursor-pointer">{{isLoggedIn?'Logout':'Login'}}</button>
 
     </div>
 </div>

@@ -3,33 +3,46 @@ import { CartService } from '../../core/services/cart.service';
 import { ApiService } from '../../core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { RazorpayService } from '../../core/services/razorpay.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {  FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddAddressComponent } from "../components/add-address/add-address.component";
 
 @Component({
   selector: 'app-buy',
-  imports: [CommonModule, AddAddressComponent],
+  imports: [CommonModule, AddAddressComponent,FormsModule,ReactiveFormsModule],
   templateUrl: './buy.component.html',
   styleUrl: './buy.component.css'
 })
-export class BuyComponent implements OnInit,OnDestroy {
+export class BuyComponent implements OnInit, OnDestroy {
   cartItems: any[] = [];
-  items:any[] = [];
-  myProfile: any = {};
+  items: any[] = [];
+  myProfile: any = undefined;
   private cartSubscription: any;
-  addAddressDialog:boolean = false;
+  addAddressDialog: boolean = false;
 
 
+  orderForm = new FormGroup({
+    recipientName: new FormControl('', [Validators.required]),
+    recipientPhone: new FormControl('', [Validators.required, Validators.minLength(10), Validators.pattern('^[0-9]$'),]),
+    shippingAddressId: new FormControl('', [Validators.required]),
+    billingAddressId: new FormControl('', [Validators.required]),
+    billingSameAsShipping: new FormControl(true),
+    items: new FormControl([], [Validators.required]),
+  });
 
-  constructor(private cartService: CartService, private apiService: ApiService,private razorpayService: RazorpayService) { }
+  constructor(private cartService: CartService, private apiService: ApiService, private razorpayService: RazorpayService) { }
 
 
   ngOnInit(): void {
-    this.cartSubscription=this.cartService.cartItems$.subscribe(items => {
-        this.items=items;
-     this.getStockByIds(this.items);
+    this.cartSubscription = this.cartService.cartItems$.subscribe(items => {
+      this.items = items;
+      this.getStockByIds(this.items);
     });
     this.getMyProfile();
+
+    this.orderForm.valueChanges.subscribe(value => {
+      console.log(value);
+      
+    })
     // this.makePayment('order_ABC123XYZ');
   }
 
@@ -38,10 +51,14 @@ export class BuyComponent implements OnInit,OnDestroy {
   }
 
   getMyProfile() {
-       this.apiService.getMyProfile().subscribe({
+    this.apiService.getMyProfile().subscribe({
       next: (res: any) => {
-        this.myProfile=res;
-       }
+        this.myProfile = res;
+        this.orderForm.patchValue({
+          recipientName: this.myProfile.fullName,
+          recipientPhone: this.myProfile.phone,
+        })
+      }
     });
   }
 
@@ -51,12 +68,12 @@ export class BuyComponent implements OnInit,OnDestroy {
       next: (res: any) => {
         this.cartItems = res;
       },
-      error: (error: any) => {}
+      error: (error: any) => { }
     });
   }
 
 
-  makePayment(orderId:string) {
+  makePayment(orderId: string) {
     const orderDetails = {
       currency: 'INR',
       name: 'Your Company',
@@ -72,10 +89,10 @@ export class BuyComponent implements OnInit,OnDestroy {
       }
     };
 
-    this.razorpayService.payWithRazor(orderDetails, (response:any) => {
+    this.razorpayService.payWithRazor(orderDetails, (response: any) => {
       console.log('Payment successful:', response);
       // handle success
-    }, (error:any) => {
+    }, (error: any) => {
       console.error('Payment failed or closed:', error);
       // handle failure or dismissal
     });
@@ -86,11 +103,11 @@ export class BuyComponent implements OnInit,OnDestroy {
   }
 
 
- 
+
 
   ngOnDestroy(): void {
-  this.cartSubscription.unsubscribe();
+    this.cartSubscription.unsubscribe();
   }
 
-  
+
 }

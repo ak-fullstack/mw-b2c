@@ -26,6 +26,7 @@ export const api = {
     getProfile:url+'/customer/me',
     address:url+'/customer-address',
     getAllStates: `${url}/customer-address/get-all-states`,
+    logout: `${url}/auth/logout`,
   },
   product:{
     getLatestStockPerProduct: `${url}/stocks/latest-by-product`,

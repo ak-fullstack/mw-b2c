@@ -238,15 +238,17 @@ export class LoginComponent implements OnInit {
     }
     this.apiService.verifyOauthToken(payload).subscribe({
       next: (res) => {
-          this.redirectAferLogin();
+        this.redirectAferLogin();
       }
     })
   }
 
-  redirectAferLogin(){
-//     const currentUrl = this.router.url;
-//   this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-//   this.router.navigateByUrl(currentUrl);
-// });
+  redirectAferLogin() {
+    const currentUrl = this.router.url;
+    this.loginService.hide();
+    this.loginService.updateLoginStatus(true);
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl(currentUrl);
+    });
   }
 }
