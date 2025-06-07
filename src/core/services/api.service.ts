@@ -59,6 +59,10 @@ customerLogin(payload: any): Observable<any> {
     return this.http.post(api.customer.address, payload);
   }
 
+  editCustomerAddress(payload: any): Observable<any> {
+    return this.http.patch(api.customer.address, payload);
+  }
+
   getAllStates(): Observable<any> {
     return this.http.get(api.customer.getAllStates);
   }

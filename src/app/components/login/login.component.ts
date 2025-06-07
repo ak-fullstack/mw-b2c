@@ -251,4 +251,9 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl(currentUrl);
     });
   }
+
+  closeLogin(){
+    this.router.navigate(['/']);
+    this.loginService.hide();
+  }
 }
