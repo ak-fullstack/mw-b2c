@@ -12,6 +12,7 @@ export class LoginService {
   public isLoggedIn$ = this.loggedInSubject.asObservable(); // use this in components
 
   constructor(private appRef: ApplicationRef, private injector: EnvironmentInjector, private router: Router, private cartService: CartService) {
+    
     const isLoggedIn = JSON.parse(localStorage.getItem('loggedIn') || 'false');
     this.loggedInSubject.next(isLoggedIn); // initialize observable state
   }

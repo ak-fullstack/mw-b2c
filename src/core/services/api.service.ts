@@ -70,4 +70,8 @@ customerLogin(payload: any): Observable<any> {
   logout(): Observable<any> {
     return this.http.post(api.customer.logout, {});
   }
+
+  createOrder(payload:any):Observable<any>{
+    return this.http.post(api.customer.createOrder,payload)
+  }
 }

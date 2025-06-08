@@ -6,10 +6,14 @@ import { RazorpayService } from '../../core/services/razorpay.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddAddressComponent } from "../components/add-address/add-address.component";
 import { EditAddressComponent } from "../components/edit-address/edit-address.component";
+import { environment } from '../../environments/environment';
+import { NgZone } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-buy',
-  imports: [CommonModule, AddAddressComponent, FormsModule, ReactiveFormsModule, EditAddressComponent],
+  imports: [CommonModule, AddAddressComponent, FormsModule, ReactiveFormsModule, EditAddressComponent, RouterModule],
   templateUrl: './buy.component.html',
   styleUrl: './buy.component.css'
 })
@@ -20,29 +24,32 @@ export class BuyComponent implements OnInit, OnDestroy {
   private cartSubscription: any;
   addAddressDialog: boolean = false;
   editAddressDialog: boolean = false;
+  paymentSuccess=false;
+  paymentDate=new Date()
 
 
   orderForm = new FormGroup({
-    recipientName: new FormControl('', [Validators.required]),
-    recipientPhone: new FormControl('', [
+    shippingName: new FormControl('', [Validators.required]),
+    shippingPhoneNumber: new FormControl('', [
       Validators.required,
       Validators.minLength(10),
       Validators.maxLength(10),
       Validators.pattern('^[0-9]{10}$')
     ]),
+    shippingEmailId: new FormControl('', [Validators.required, Validators.email]),
     shippingAddressId: new FormControl<any>('', [Validators.required]),
     billingAddressId: new FormControl<any>('', [Validators.required]),
     billingSameAsShipping: new FormControl(true),
     items: new FormControl<any>([]),
   });
 
-  constructor(private cartService: CartService, private apiService: ApiService, private razorpayService: RazorpayService) { }
+  constructor(private cartService: CartService, private apiService: ApiService, private razorpayService: RazorpayService,private ngZone: NgZone) { }
 
 
   ngOnInit(): void {
     this.cartSubscription = this.cartService.cartItems$.subscribe(items => {
       this.items = items;
-      if(this.items.length>0){
+      if (this.items.length > 0) {
         this.getStockByIds(this.items);
       }
     });
@@ -71,12 +78,13 @@ export class BuyComponent implements OnInit, OnDestroy {
   }
 
   getMyProfile() {
-    this.apiService.getMyProfile().subscribe({ 
+    this.apiService.getMyProfile().subscribe({
       next: (res: any) => {
         this.myProfile = res;
         this.orderForm.patchValue({
-          recipientName: this.myProfile.fullName,
-          recipientPhone: this.myProfile.phone,
+          shippingName: this.myProfile.fullName,
+          shippingPhoneNumber: this.myProfile.phoneNumber,
+          shippingEmailId: this.myProfile.emailId
         })
       }
     });
@@ -93,29 +101,40 @@ export class BuyComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  makePayment(orderId: string) {
-    const orderDetails = {
+  paymentDetails:any;
+  payWithRazorPay(orderDetails: any) {
+    const payload = {
       currency: 'INR',
-      name: 'Your Company',
-      description: 'Product/Service Description',
-      order_id: orderId,
+      name: environment.companyName,
+      description: 'E-Commerce',
+      order_id: orderDetails.razorpayOrderId,
       prefill: {
-        name: 'John Doe',
-        email: 'john@example.com',
-        contact: '9999999999'
+        name: orderDetails.name,
+        email: orderDetails.email,
+        contact: orderDetails.contact
       },
       theme: {
         color: '#F37254'
       }
     };
 
-    this.razorpayService.payWithRazor(orderDetails, (response: any) => {
-      console.log('Payment successful:', response);
-      // handle success
-    }, (error: any) => {
-      console.error('Payment failed or closed:', error);
-      // handle failure or dismissal
+    this.razorpayService.payWithRazorPay(payload).subscribe({
+      next: (response) => {
+         this.ngZone.run(() => {
+      console.log('Payment success:', response);
+      this.paymentDetails = response;
+      this.paymentSuccess = true;
+      this.cartService.clearCart();
+    });
+        
+      },
+      error: (error) => {
+        console.log('Payment failed or dismissed:', error);
+        // handle failure logic
+      },
+      complete: () => {
+        console.log('Payment observable completed');
+      }
     });
   }
 
@@ -160,4 +179,32 @@ export class BuyComponent implements OnInit, OnDestroy {
   get formItems() {
     return this.orderForm.get('items')?.value || [];
   }
+
+  createOrder() {
+    if (this.orderForm.invalid) {
+      this.orderForm.markAllAsTouched();
+      return;
+    }
+    const formValue = this.orderForm.value;
+
+    const sanitizedItems = formValue.items.map((item: any) => ({
+      stockId: item.stockId,
+      quantity: item.quantity
+    }));
+
+    const payload = {
+      ...formValue,
+      items: sanitizedItems
+    };
+    this.apiService.createOrder(payload).subscribe({
+      next: (res: any) => {
+        this.payWithRazorPay(res)
+      },
+      error: (error: any) => {
+
+      }
+    })
+  }
+
+
 }

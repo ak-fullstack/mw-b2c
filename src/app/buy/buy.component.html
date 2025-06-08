@@ -1,4 +1,4 @@
-<form [formGroup]="orderForm" *ngIf="myProfile"
+<form [formGroup]="orderForm" *ngIf="myProfile && !paymentSuccess" (ngSubmit)="createOrder()"
   class="flex flex-col lg:flex-row gap-6 p-4 max-w-[1400px] mx-auto pt-20">
   <div class="w-full lg:w-5/12 space-y-4">
     <h2 class="text-xl font-bold mb-4">DELIVERY DETAILS</h2>
@@ -6,9 +6,15 @@
     <!-- Name Input -->
     <div class="mb-4">
       <label for="name" class="block text-sm font-medium text-gray-700 mb-1 ">Recipient Name</label>
-      <input formControlName="recipientName" autocomplete="off" type="text" id="name" name="name"
+      <input formControlName="shippingName" autocomplete="off" type="text" id="name" name="name"
         class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
         placeholder="Enter recipient name" />
+    </div>
+    <div class="mb-4">
+      <label for="name" class="block text-sm font-medium text-gray-700 mb-1 ">Recipient Email</label>
+      <input formControlName="shippingEmailId" autocomplete="off" type="text" id="name" name="name"
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+        placeholder="Enter recipient Email" />
     </div>
     <div class="mb-4">
   <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">
@@ -24,7 +30,7 @@
     <!-- Input field with left padding -->
     <input
       autocomplete="off"
-      formControlName="recipientPhone"
+      formControlName="shippingPhoneNumber"
       type="tel"
       id="phoneNumber"
       name="phoneNumber"
@@ -167,7 +173,7 @@
         <p class="text-xl font-medium">₹{{ cartSubTotal + cartTotalTax }}</p>
     </div>
 
-    <button class="mt-4 w-full text-white py-2 rounded disabled:cursor-not-allowed" [disabled]="orderForm.invalid"
+    <button type="submit"  class="mt-4 w-full text-white py-2 rounded disabled:cursor-not-allowed" [disabled]="orderForm.invalid"
       [ngClass]="orderForm.valid ? 'bg-blue-600' : 'bg-blue-300'">
       Proceed to checkout
     </button>
@@ -178,6 +184,40 @@
   </div>
 
 </form>
+<div *ngIf="paymentDetails" class="flex flex-col items-center justify-center min-h-[93vh] bg-green-50 p-6">
+  <!-- Tick animation -->
+  <div class="mb-6">
+    <svg class="w-24 h-24 text-green-600" viewBox="0 0 52 52">
+      <circle
+        class="tick-circle"
+        cx="26"
+        cy="26"
+        r="25"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      />
+      <path
+        class="tick-mark"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="4"
+        d="M14 27l7 7 16-16"
+      />
+    </svg>
+  </div>
+
+  <h1 class="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
+  <p class="text-gray-600 mb-4">Thank you for your order. Your payment has been received.</p>
+      <p class="pb-5"><strong>Order ID: #{{ paymentDetails.razorpay_order_id }}</strong></p>
+
+  <button [routerLink]="['/']"
+    class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+>
+    Back to Home
+  </button>
+</div>
+
 
 <div *ngIf="addAddressDialog" class="absolute top-0 left-0 h-screen w-screen flex items-center justify-center"
   style="background-color: rgba(0, 0, 0, 0.445);">

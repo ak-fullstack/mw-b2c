@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
 
 declare var Razorpay: any;
 
@@ -11,42 +12,32 @@ export class RazorpayService {
 
   constructor() {}
 
-  payWithRazor(orderDetails: {
-    currency: string;
-    name: string;
-    description: string;
-    order_id: string;
-    prefill: {
-      name: string;
-      email: string;
-      contact: string;
-    };
-    theme?: {
-      color: string;
-    };
-  }, onSuccess: (response: any) => void, onFailure?: (error: any) => void) {
-
+ payWithRazorPay(orderDetails: any): Observable<any> {
+  return new Observable(observer => {
     const options: any = {
       key: environment.razorPaykeyId,
-      currency: orderDetails.currency,
-      name: orderDetails.name,
-      description: orderDetails.description,
-      order_id: orderDetails.order_id,
-      prefill: orderDetails.prefill,
-      theme: orderDetails.theme || { color: '#3399cc' },
-      handler: function (response: any) {
-        onSuccess(response);
+      ...orderDetails,
+      handler: (response: any) => {
+        // Payment successful
+        observer.next(response);
+        observer.complete();
       },
       modal: {
-        ondismiss: function () {
-          if (onFailure) {
-            onFailure({ message: 'Payment popup closed' });
-          }
+        ondismiss: () => {
+          // Payment popup closed or dismissed — treat as failure
+          observer.error({ message: 'Payment popup closed' });
         }
       }
     };
 
     const rzp = new Razorpay(options);
     rzp.open();
-  }
+
+    // Optional cleanup when unsubscribed
+    return () => {
+      // If you want, you can close the popup on unsubscribe here
+      // rzp.close();  // Uncomment if needed
+    };
+  });
+}
 }

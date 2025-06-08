@@ -15,4 +15,6 @@ firebaseConfig : {
     measurementId: "G-FKBT2XQKDK"
   },
 razorPaykeyId: 'rzp_test_3Eh0pmacsH3Row',
+
+companyName:'Winter Green Private Ltd'
 }
