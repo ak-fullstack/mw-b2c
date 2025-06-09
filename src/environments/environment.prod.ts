@@ -1,9 +1,9 @@
 export const environment = {
-   prod:true,
+   prod: true,
    apiBaseUrl: 'https://mw-admin-136e3.uc.r.appspot.com/api',
-   googleClientId:'509406744774-mlgslvgav2f9u73tjd9k0796c16s15j3.apps.googleusercontent.com',
+   googleClientId: '509406744774-mlgslvgav2f9u73tjd9k0796c16s15j3.apps.googleusercontent.com',
 
-   firebaseConfig : {
+   firebaseConfig: {
       apiKey: "AIzaSyAtHqUssEOrOZLpbX4K6gp-ijWNzdQQ2Lg",
       authDomain: "mw-test-5fd6e.firebaseapp.com",
       projectId: "mw-test-5fd6e",
@@ -11,7 +11,8 @@ export const environment = {
       messagingSenderId: "188666963435",
       appId: "1:188666963435:web:fc4c5f02c6e50e9e1d65ae",
       measurementId: "G-FKBT2XQKDK"
-    }
-
+   },
+   razorPaykeyId: 'rzp_test_3Eh0pmacsH3Row',
+   companyName: 'Winter Green Private Ltd'
 
 }
