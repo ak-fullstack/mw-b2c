@@ -104,4 +104,11 @@ addToCart(selectedItem: any) {
     this.cartService.removeFromCart({stockId,quantity:1});
   }
 
+   checkColorOutofStock(color: any): boolean {
+  // Check if every size is unavailable (available < 1)
+  const outOfStock = color.sizes.every((size: any) => size.available < 1);
+  return outOfStock;
+}
+ 
+
 }
