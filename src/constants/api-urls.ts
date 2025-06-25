@@ -4,17 +4,7 @@ const url = environment.apiBaseUrl;
 
 export const api = {
 
-  admin: {
-    sendOtp: `${url}/auth/send-otp`,
-    verifyOtp: `${url}/auth/verify-otp`,
-    getRoles: `${url}/auth/roles`,
-    getPermissions: `${url}/role-permission/get-all-permissions`,
-    createRole: `${url}/role/create-role`,
-    getallRolesWithPermissions: `${url}/role/get-all-roles-with-permissions`,
-    uploadUserImage: `${url}/google-cloud-storage/upload`,
-    addNewUser: `${url}/user/add-new-user`,
-    getAllUsers: `${url}/user/get-all-users`,
-  },
+
   customer: {
     verifyOauthToken: `${url}/auth/verify-oauth-token`,
     sendCustomerEmailOtpForRegistration: `${url}/auth/register/send-customer-email-otp`,
@@ -27,7 +17,8 @@ export const api = {
     address:url+'/customer-address',
     getAllStates: `${url}/customer-address/get-all-states`,
     logout: `${url}/auth/logout`,
-    createOrder:url+'/orders/create-order'
+    createOrder:url+'/orders/create-order',
+    getCustomerOrders:url+'/orders/customer-orders'
   },
   product:{
     getLatestStockPerProduct: `${url}/stocks/latest-by-product`,

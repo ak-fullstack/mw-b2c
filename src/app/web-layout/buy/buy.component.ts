@@ -1,12 +1,12 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { CartService } from '../../core/services/cart.service';
-import { ApiService } from '../../core/services/api.service';
+import { CartService } from '../../../core/services/cart.service';
+import { ApiService } from '../../../core/services/api.service';
 import { CommonModule } from '@angular/common';
-import { RazorpayService } from '../../core/services/razorpay.service';
+import { RazorpayService } from '../../../core/services/razorpay.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AddAddressComponent } from "../components/add-address/add-address.component";
-import { EditAddressComponent } from "../components/edit-address/edit-address.component";
-import { environment } from '../../environments/environment';
+import { AddAddressComponent } from "../../components/add-address/add-address.component";
+import { EditAddressComponent } from "../../components/edit-address/edit-address.component";
+import { environment } from '../../../environments/environment';
 import { NgZone } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -19,7 +19,6 @@ import { RouterModule } from '@angular/router';
 })
 export class BuyComponent implements OnInit, OnDestroy {
   // cartItems: any[] = [];
-  items: any[] = [];
   myProfile: any = undefined;
   private cartSubscription: any;
   addAddressDialog: boolean = false;
@@ -48,10 +47,8 @@ export class BuyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.cartSubscription = this.cartService.cartItems$.subscribe(items => {
-      this.items = items;
-      if (this.items.length > 0) {
-        this.getStockByIds(this.items);
-      }
+      
+        this.getStockByIds(items);
     });
     this.getMyProfile();
 

@@ -1,0 +1,88 @@
+<div *ngIf="myOrders.length === 0" class="text-gray-500">
+    You have no orders yet.
+</div>
+<!-- Order List View -->
+<div *ngIf="!showDetails" class="p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">My Orders</h2>
+
+    <div class="overflow-auto">
+        <table class="min-w-full text-left border-t border-gray-300">
+            <thead class="text-sm text-gray-700 uppercase">
+                <tr>
+                    <th class="p-3">Order</th>
+                    <th class="p-3">Date</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Total</th>
+                    <th class="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of myOrders" class="border-b hover:bg-gray-50">
+                    <td class="p-3 text-blue-800 font-semibold">#{{ order.orderId }}</td>
+                    <td class="p-3">{{ order.createdAt | date: 'mediumDate' }}</td>
+                    <td class="p-3">{{ order.orderStatus }}</td>
+                    <td class="p-3">{{ order.totalAmount }} for {{ order.itemCount }} item</td>
+                    <td class="p-3">
+                        <button class="px-4 py-2 bg-gray-200 text-sm font-medium rounded hover:bg-gray-300"
+                            (click)="viewOrder(order)">
+                            View
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Order Details View -->
+<div *ngIf="showDetails" class="p-6 space-y-6">
+    <button class="mb-4 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded" (click)="backToList()">
+        ← Back to Orders
+    </button>
+
+    <p class="text-sm text-gray-700">
+        Order #{{ selectedOrder.orderId }} was placed on April 16, 2025 and is currently
+        <strong>{{selectedOrder.orderStatus}}</strong>.
+    </p>
+
+    <h3 class="text-lg font-bold uppercase">Order Details</h3>
+    <div class="border-t border-b divide-y">
+        <div *ngFor="let item of selectedOrder.items" class="flex justify-between py-2">
+            <div>{{item.productName}} × {{item.quantityBought}}</div>
+            <div>₹{{item.itemTotal}}</div>
+        </div>
+        <div class="flex justify-between py-2">
+            <div class="font-medium">Subtotal:</div>
+            <div>₹799.00</div>
+        </div>
+        <div class="flex justify-between py-2">
+            <div class="font-medium">Shipping:</div>
+            <div>₹50.00 <span class="text-sm text-gray-500">via Flat rate</span></div>
+        </div>
+        <div class="flex justify-between py-2">
+            <div class="font-semibold">Total:</div>
+            <div class="font-semibold">₹849.00 <span class="text-sm text-gray-500">(includes ₹85.61 tax)</span></div>
+        </div>
+        <div class="flex justify-between py-2">
+            <div class="font-medium">Payment method:</div>
+            <div>Pay online via UPI, Card, Wallet etc.</div>
+        </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6 mt-4">
+        <div>
+            <h4 class="font-bold uppercase mb-2">Billing Address</h4>
+            <div class="border p-4 rounded">
+               {{selectedOrder.billingAddress}}
+
+            </div>
+        </div>
+
+        <div>
+            <h4 class="font-bold uppercase mb-2">Shipping Address</h4>
+            <div class="border p-4 rounded">
+                {{selectedOrder.shippingAddress}}
+            </div>
+        </div>
+    </div>
+</div>

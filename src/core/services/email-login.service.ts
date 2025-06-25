@@ -22,7 +22,6 @@ export class EmailAuthService {
   }
 
   async initLoginCheck(): Promise<void> {
-    alert('')
     if (isSignInWithEmailLink(firebaseAuth, window.location.href)) {
       let storedEmail = window.localStorage.getItem('emailForSignIn');
 

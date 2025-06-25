@@ -25,20 +25,17 @@ export class CartService {
 
     if (!alreadyExists) {
       this.items.push(item);
-      this.updateStorage();
       this.cartItemsSubject.next([...this.items]);
+      this.updateStorage();
+
     } else {
       console.log('Item already in cart:', item.stockId);
     }
   }
 
   removeFromCart(item: any) {
-    console.log(item);
-    console.log(this.items);
-    
-    
+
     this.items = this.items.filter(existing => existing.stockId !== item.stockId);
-    console.log(this.items);
     
     this.updateStorage();
     this.cartItemsSubject.next([...this.items]);

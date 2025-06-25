@@ -20,7 +20,10 @@ export class MenuComponent {
 
   ngOnInit(): void {
     this.cartService.cartItems$.subscribe(items => {
+      // console.log(items);
+      
       this.cartItems = items;
+      // console.log(this.cartItems);
       
     });
     this.loginService.isLoggedIn$.subscribe(isLoggedIn => {      
