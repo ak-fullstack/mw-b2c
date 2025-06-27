@@ -35,7 +35,7 @@
 </div>
 
 <!-- Order Details View -->
-<div *ngIf="showDetails" class="p-6 space-y-6">
+<div *ngIf="showDetails && !returnItems" class="p-6 space-y-6">
     <button class="mb-4 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded" (click)="backToList()">
         ← Back to Orders
     </button>
@@ -47,8 +47,11 @@
 
     <h3 class="text-lg font-bold uppercase">Order Details</h3>
     <div class="border-t border-b divide-y">
-        <div *ngFor="let item of selectedOrder.items" class="flex justify-between py-2">
-            <div>{{item.productName}} × {{item.quantityBought}}</div>
+        <div *ngFor="let item of selectedOrder.items" class="flex justify-between py-2 items-center">
+            <div class="flex items-center">
+                <img class=" w-[50px]" src="{{item.imageUrl}}">
+                <div class="ps-2">{{item.productName}} × {{item.quantity}}</div>
+            </div>
             <div>₹{{item.itemTotal}}</div>
         </div>
         <div class="flex justify-between py-2">
@@ -65,7 +68,7 @@
         </div>
         <div class="flex justify-between py-2">
             <div class="font-medium">Payment method:</div>
-            <div>Pay online via UPI, Card, Wallet etc.</div>
+            <div>{{selectedOrder.paymentMethod}}</div>
         </div>
     </div>
 
@@ -73,7 +76,7 @@
         <div>
             <h4 class="font-bold uppercase mb-2">Billing Address</h4>
             <div class="border p-4 rounded">
-               {{selectedOrder.billingAddress}}
+                {{selectedOrder.billingAddress}}
 
             </div>
         </div>
@@ -85,4 +88,56 @@
             </div>
         </div>
     </div>
+    <div>
+        <button class="p-3 py-1 font-medium text-gray-600 border border-gray-300">Having Issues?</button>
+        <button class="ms-2 bg-black text-white py-1 px-2 font-medium rounded-sm " (click)="openReturnRequest()">Request
+            a Return</button>
+    </div>
+</div>
+
+<div *ngIf="returnItems">
+    <button class="mb-4 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded" (click)="returnItems=null">
+        ← Back to Order Details
+    </button>
+    <h4 class="text-lg font-semibold mb-4">ORDER DETAILS</h4>
+
+    <div *ngFor="let item of returnItems.items; let i = index" class="flex items-start gap-4 py-3 border-b">
+        <img [src]="item.imageUrl" alt="{{ item.productName }}" class="w-16 h-16 object-cover rounded " />
+
+        <!-- Product Details and Controls -->
+        <div class="flex-1">
+            <!-- Product Name and Price -->
+            <div class="flex justify-between items-center mb-2">
+                <span class="font-medium">{{ item.productName }}</span>
+            </div>
+
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex items-center gap-2 justify-center w-2/12">
+                    <button [disabled]="item.quantity <= 1" type="button" (click)="decreaseQuantity(i)"
+                        class="w-[30px] h-[30px] border border-gray-300 rounded-md text-gray-600 hover:border-red-400 hover:text-red-600 hover:bg-red-50 transition duration-200">
+                        -
+                    </button>
+                    <span class="w-6 text-center font-medium text-gray-500">{{ item.quantity }}</span>
+                    <button type="button" (click)="increaseQuantity(i)"
+                        class="w-[30px] h-[30px] border border-gray-300 rounded-md text-gray-600 hover:border-green-400 hover:text-green-600 hover:bg-green-50 transition duration-200">
+                        +
+                    </button>
+                </div>
+
+                <!-- Reason Input -->
+                <input type="text" placeholder="Reason for return" [(ngModel)]="item.reason"
+                    class="flex-1 min-w-[180px] px-3 py-1.5 rounded-md border border-gray-300 bg-white shadow-sm text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+
+                <!-- Delete Button -->
+                <svg width="20px" height="30px" style="cursor:pointer" (click)="removeItem(i)" viewBox="0 0 48 48"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M45.46 45.46 5.54 5.54 4 4 2.54 2.54 0 5.08l8.78 8.78 4.42 9.32-2.7 4.9c-.32.56-.5 1.22-.5 1.92 0 2.2 1.8 4 4 4h14.92l2.76 2.76c-1 .73-1.66 1.91-1.66 3.24 0 2.2 1.78 4 3.98 4 1.33 0 2.51-.67 3.24-1.68L42.92 48l2.54-2.54zM14.84 30c-.28 0-.5-.22-.5-.5l.06-.24L16.2 26h4.72l4 4H14.84zm16.26-4c1.5 0 2.82-.82 3.5-2.06l7.16-12.98c.16-.28.24-.62.24-.96 0-1.1-.9-2-2-2H13.08l18 18h.02zM14 36c-2.2 0-3.98 1.8-3.98 4s1.78 4 3.98 4 4-1.8 4-4-1.8-4-4-4z"
+                        fill="#f00000" class="fill-000000"></path>
+                    <path d="M0 0h48v48H0z" fill="none"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <button (click)="createRetrunRequest()" class="block bg-black text-white py-1 px-2 font-medium rounded-sm mt-5 ms-auto" (click)="openReturnRequest()">Create Request</button>
 </div>

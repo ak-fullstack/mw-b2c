@@ -78,4 +78,8 @@ customerLogin(payload: any): Observable<any> {
   getCustomerOrders(): Observable<any> {
     return this.http.get(api.customer.getCustomerOrders);
   }
+
+   createReturnRequest(payload:any):Observable<any>{
+    return this.http.post(api.customer.requestReturn,payload)
+  }
 }

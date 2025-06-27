@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../core/services/api.service';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
@@ -12,6 +13,7 @@ export class OrdersComponent implements OnInit {
   myOrders:any[]=[];
   showDetails = false;
   selectedOrder: any;
+  returnItems:any=null;
 
   constructor(private apiService:ApiService){
     
@@ -28,8 +30,8 @@ export class OrdersComponent implements OnInit {
     })
   }
 
-   viewOrder(orderId: number) {
-    this.selectedOrder = orderId;
+   viewOrder(order: number) {
+    this.selectedOrder = order;
     this.showDetails = true;
   }
 
@@ -58,6 +60,48 @@ export class OrdersComponent implements OnInit {
     default:
       return 'bg-gray-200 text-gray-700';
   }
+}
+
+increaseQuantity(index: number) {
+  
+  if (this.returnItems.items[index].quantity < this.selectedOrder.items[index].quantity) {
+    this.returnItems.items[index].quantity++;
+  }
+}
+
+decreaseQuantity(index: number) {
+  if (this.returnItems.items[index].quantity > 1) {
+
+    this.returnItems.items[index].quantity--;
+  }
+}
+
+removeItem(index: number) {
+  this.returnItems.items.splice(index, 1);
+}
+
+openReturnRequest(){
+      this.returnItems = structuredClone(this.selectedOrder);
+}
+
+createRetrunRequest(){
+  const payload = {
+  orderId: this.returnItems.orderId,
+  reason: 'replacement',
+  items: this.returnItems.items.map((item:any) => ({
+    orderItemId: item.orderItemId,
+    quantity: item.quantity,
+    reason: item.reason
+  }))
+};
+
+this.apiService.createReturnRequest(payload).subscribe({
+  next:(res:any)=>{
+
+  }
+})
+
+  
 }
 
 }

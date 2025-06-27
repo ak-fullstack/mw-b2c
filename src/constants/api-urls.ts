@@ -18,7 +18,8 @@ export const api = {
     getAllStates: `${url}/customer-address/get-all-states`,
     logout: `${url}/auth/logout`,
     createOrder:url+'/orders/create-order',
-    getCustomerOrders:url+'/orders/customer-orders'
+    getCustomerOrders:url+'/orders/customer-orders',
+    requestReturn:url+'/returns/request-return'
   },
   product:{
     getLatestStockPerProduct: `${url}/stocks/latest-by-product`,
