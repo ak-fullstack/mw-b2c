@@ -97,7 +97,7 @@ createRetrunRequest(){
 
 this.apiService.createReturnRequest(payload).subscribe({
   next:(res:any)=>{
-
+      this.backToList();
   }
 })
 
