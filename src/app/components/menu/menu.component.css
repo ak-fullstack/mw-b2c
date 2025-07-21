@@ -1,0 +1,13 @@
+.menu-active{
+    color: #A3D71A!important;
+}
+
+.menu-inactive{
+    color: #a1d71ab6;
+}
+
+.menubar{
+    transition:.2s;
+}
+
+

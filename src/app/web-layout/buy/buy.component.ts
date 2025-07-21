@@ -23,8 +23,10 @@ export class BuyComponent implements OnInit, OnDestroy {
   private cartSubscription: any;
   addAddressDialog: boolean = false;
   editAddressDialog: boolean = false;
-  paymentSuccess=false;
-  paymentDate=new Date()
+  paymentSuccess = false;
+  paymentDate = new Date();
+  calculatedResults: any;
+
 
 
   orderForm = new FormGroup({
@@ -40,15 +42,16 @@ export class BuyComponent implements OnInit, OnDestroy {
     billingAddressId: new FormControl<any>('', [Validators.required]),
     billingSameAsShipping: new FormControl(true),
     items: new FormControl<any>([]),
+    paymentSource: new FormControl<any>('full')
   });
 
-  constructor(private cartService: CartService, private apiService: ApiService, private razorpayService: RazorpayService,private ngZone: NgZone) { }
+  constructor(private cartService: CartService, private apiService: ApiService, private razorpayService: RazorpayService, private ngZone: NgZone) { }
 
 
   ngOnInit(): void {
     this.cartSubscription = this.cartService.cartItems$.subscribe(items => {
-      
-        this.getStockByIds(items);
+
+      this.getStockByIds(items);
     });
     this.getMyProfile();
 
@@ -63,6 +66,12 @@ export class BuyComponent implements OnInit, OnDestroy {
         this.orderForm.get('billingAddressId')?.setValue(this.orderForm.get('shippingAddressId')?.value);
       }
     })
+
+    this.orderForm.get('shippingAddressId')?.valueChanges.subscribe((selectedId) => {
+      const selectedAddress = this.myProfile.addresses.find((a: any) => a.id === selectedId);
+      this.myProfile.shippingAddress = selectedAddress;
+      this.calculateOrder();
+    });
 
     // this.makePayment('order_ABC123XYZ');
   }
@@ -93,12 +102,13 @@ export class BuyComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         // this.cartItems = res;
         this.orderForm.get('items')?.setValue(res);
+        this.calculateOrder();
       },
       error: (error: any) => { }
     });
   }
 
-  paymentDetails:any;
+  paymentDetails: any;
   payWithRazorPay(orderDetails: any) {
     const payload = {
       currency: 'INR',
@@ -117,13 +127,13 @@ export class BuyComponent implements OnInit, OnDestroy {
 
     this.razorpayService.payWithRazorPay(payload).subscribe({
       next: (response) => {
-         this.ngZone.run(() => {
-      console.log('Payment success:', response);
-      this.paymentDetails = response;
-      this.paymentSuccess = true;
-      this.cartService.clearCart();
-    });
-        
+        this.ngZone.run(() => {
+          console.log('Payment success:', response);
+          this.paymentDetails = response;
+          this.paymentSuccess = true;
+          this.cartService.clearCart();
+        });
+
       },
       error: (error) => {
         console.log('Payment failed or dismissed:', error);
@@ -195,13 +205,65 @@ export class BuyComponent implements OnInit, OnDestroy {
     };
     this.apiService.createOrder(payload).subscribe({
       next: (res: any) => {
-        this.payWithRazorPay(res)
+        if (res.razorpayOrderId === null) {
+          this.getWalletOrderConfirmation(res.orderId);
+        }
+        else {
+          this.payWithRazorPay(res)
+
+        }
       },
       error: (error: any) => {
 
       }
     })
   }
+
+  getWalletOrderConfirmation(orderId: any) {
+    this.apiService.getWalletorderConfiramtion(orderId).subscribe({
+      next: (res) => {
+        this.paymentDetails = res;
+          this.paymentSuccess = true;
+          this.cartService.clearCart();
+       }
+    })
+
+  }
+
+  calculateOrder() {
+    if (this.orderForm.invalid) {
+      this.orderForm.markAllAsTouched();
+      return;
+    }
+    const formValue = this.orderForm.value;
+
+    const sanitizedItems = formValue.items.map((item: any) => ({
+      stockId: item.stockId,
+      quantity: item.quantity
+    }));
+
+    const payload = {
+      ...formValue,
+      items: sanitizedItems,
+      shippingState: this.myProfile?.shippingAddress?.state,
+    };
+    this.apiService.calculateOrder(payload).subscribe({
+      next: (res: any) => {
+        this.calculatedResults = res;
+
+      },
+      error: (error: any) => {
+
+      }
+    })
+  }
+
+
+  setPaymentSource(source: 'razorpay' | 'wallet') {
+    this.orderForm.patchValue({ paymentSource: source });
+  }
+
+
 
 
 }

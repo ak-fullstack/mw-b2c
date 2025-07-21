@@ -8,43 +8,43 @@ import { api } from '../../constants/api-urls';
 })
 export class ApiService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
 
   verifyOauthToken(payload: any): Observable<any> {
-  return this.http.post(api.customer.verifyOauthToken, payload, {
-    withCredentials: true, 
-  });
-}
+    return this.http.post(api.customer.verifyOauthToken, payload, {
+      withCredentials: true,
+    });
+  }
 
-  sendCustomerEmailOtp(payload:any): Observable<any> {
+  sendCustomerEmailOtp(payload: any): Observable<any> {
     return this.http.post(api.customer.sendCustomerEmailOtpForRegistration, payload);
   }
 
-  verifyCustomerEmailOtp(payload:any): Observable<any> {
+  verifyCustomerEmailOtp(payload: any): Observable<any> {
     return this.http.post(api.customer.verifyCustomerEmailOtp, payload);
   }
 
-  createCustomer(payload:any): Observable<any> {
+  createCustomer(payload: any): Observable<any> {
     return this.http.post(api.customer.createCustomer, payload);
   }
 
-customerLogin(payload: any): Observable<any> {
-  return this.http.post(api.customer.loginCustomer, payload, {
-    withCredentials: true,
-  });
-}
+  customerLogin(payload: any): Observable<any> {
+    return this.http.post(api.customer.loginCustomer, payload, {
+      withCredentials: true,
+    });
+  }
 
-  sendResetOtp(payload:any): Observable<any> {
+  sendResetOtp(payload: any): Observable<any> {
     return this.http.post(api.customer.sendResetOtp, payload);
   }
 
-  updateCustomer(payload:any): Observable<any> {
+  updateCustomer(payload: any): Observable<any> {
     return this.http.post(api.customer.updateCustomer, payload);
   }
-  
+
   getLatestStockPerProduct(): Observable<any> {
-    return this.http.get(api.product.getLatestStockPerProduct,{});
+    return this.http.get(api.product.getLatestStockPerProduct, {});
   }
 
   getStockbyIds(payload: any): Observable<any> {
@@ -71,17 +71,26 @@ customerLogin(payload: any): Observable<any> {
     return this.http.post(api.customer.logout, {});
   }
 
-  createOrder(payload:any):Observable<any>{
-    return this.http.post(api.customer.createOrder,payload)
+  createOrder(payload: any): Observable<any> {
+    return this.http.post(api.customer.createOrder, payload)
+  }
+
+  calculateOrder(payload: any): Observable<any> {
+    return this.http.post(api.customer.calculateOrder, payload)
   }
 
   getCustomerOrders(): Observable<any> {
     return this.http.get(api.customer.getCustomerOrders);
   }
 
-  
+   getWalletorderConfiramtion(orderId:any): Observable<any> {
+    return this.http.get(api.customer.walletOrderConfirmation+'/'+orderId);
+  }
 
-   createReturnRequest(payload:any):Observable<any>{
-    return this.http.post(api.customer.requestReturn,payload)
+
+
+
+  createReturnRequest(payload: any): Observable<any> {
+    return this.http.post(api.customer.requestReturn, payload)
   }
 }

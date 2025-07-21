@@ -56,15 +56,15 @@
         </div>
         <div class="flex justify-between py-2">
             <div class="font-medium">Subtotal:</div>
-            <div>₹799.00</div>
+            <div>₹{{selectedOrder.subTotal}}</div>
         </div>
         <div class="flex justify-between py-2">
             <div class="font-medium">Shipping:</div>
-            <div>₹50.00 <span class="text-sm text-gray-500">via Flat rate</span></div>
+            <div>₹{{selectedOrder.deliveryCharge}} <span class="text-sm text-gray-500">via Flat rate</span></div>
         </div>
         <div class="flex justify-between py-2">
             <div class="font-semibold">Total:</div>
-            <div class="font-semibold">₹849.00 <span class="text-sm text-gray-500">(includes ₹85.61 tax)</span></div>
+            <div class="font-semibold">{{selectedOrder.totalAmount}} <span class="text-sm text-gray-500">(includes {{selectedOrder.totalTax}} tax)</span></div>
         </div>
         <div class="flex justify-between py-2">
             <div class="font-medium">Payment method:</div>
@@ -90,7 +90,7 @@
     </div>
     <div>
         <button class="p-3 py-1 font-medium text-gray-600 border border-gray-300">Having Issues?</button>
-        <button class="ms-2 bg-black text-white py-1 px-2 font-medium rounded-sm " (click)="openReturnRequest()">Request
+        <button *ngIf="selectedOrder.returnAvailable" class="ms-2 bg-black text-white py-1 px-2 font-medium rounded-sm " (click)="openReturnRequest()">Request
             a Return</button>
     </div>
 </div>

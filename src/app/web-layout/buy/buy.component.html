@@ -3,7 +3,6 @@
   <div class="w-full lg:w-5/12 space-y-4">
     <h2 class="text-xl font-bold mb-4">DELIVERY DETAILS</h2>
 
-    <!-- Name Input -->
     <div class="mb-4">
       <label for="name" class="block text-sm font-medium text-gray-700 mb-1 ">Recipient Name</label>
       <input formControlName="shippingName" autocomplete="off" type="text" id="name" name="name"
@@ -17,28 +16,20 @@
         placeholder="Enter recipient Email" />
     </div>
     <div class="mb-4">
-  <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">
-    Phone Number
-  </label>
+      <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">
+        Phone Number
+      </label>
 
-  <div class="relative">
-    <!-- Flag and +91 prefix -->
-    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-700 text-sm select-none">
-      🇮🇳 +91
-    </span>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-700 text-sm select-none">
+          🇮🇳 +91
+        </span>
 
-    <!-- Input field with left padding -->
-    <input
-      autocomplete="off"
-      formControlName="shippingPhoneNumber"
-      type="tel"
-      id="phoneNumber"
-      name="phoneNumber"
-      class="w-full border border-gray-300 rounded pl-16 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-      placeholder="Enter Phone Number"
-    />
-  </div>
-</div>
+        <input autocomplete="off" formControlName="shippingPhoneNumber" type="tel" id="phoneNumber" name="phoneNumber"
+          class="w-full border border-gray-300 rounded pl-16 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+          placeholder="Enter Phone Number" />
+      </div>
+    </div>
 
 
     <h2 class="text-md font-bold mb-3">SHIPPING ADDRESS</h2>
@@ -48,8 +39,7 @@
         <div *ngFor="let address of myProfile.addresses; let i = index"
           class="mb-2 border border-gray-500 py-5 px-5 w-full max-w-lg rounded-lg">
           <label class="flex items-start justify-between gap-2 cursor-pointer">
-            <input type="radio" formControlName="shippingAddressId" [value]="address.id"
-              (click)="myProfile.shippingAddress=address" class="mt-1 w-1/24" />
+            <input type="radio" formControlName="shippingAddressId" [value]="address.id" class="mt-1 w-1/24" />
             <div class="font-medium text-md w-20/24">{{ address.fullAddress }}</div>
             <p class="ms-auto w-2/24 text-end text-blue-600 font-medium" (click)="editAddress(address)">Edit</p>
           </label>
@@ -92,128 +82,154 @@
       </div>
     </div>
   </div>
-  <div  class="w-full lg:w-7/12 p-4 md:border-l ps-10 border-gray-300">
+  <div class="w-full lg:w-7/12 p-4 md:border-l ps-10 border-gray-300">
 
-    <div *ngIf="formItems.length>0; else noItems">
+    <div *ngIf="formItems.length>0 && orderForm.get('shippingAddressId')?.valid; else noItems">
       <div class="w-full space-y-4">
-      <div class="flex items-center gap-4 border-b border-gray-200 pb-4">
-        <h3 class="text-lg font-semibold w-5/12">Product</h3>
+        <div class="flex items-center gap-4 border-b border-gray-200 pb-4">
+          <h3 class="text-lg font-semibold w-5/12">Product</h3>
 
-        <p class="w-2/12 text-center">
-          Quantity
-        </p>
-        <p class="w-2/12 font-semibold text-center">Subtotal</p>
-        <p class="w-2/12 font-semibold text-center">Tax<span *ngIf="myProfile.shippingAddress" class="text-xs font-light">
-            {{ myProfile.shippingAddress.gstType &&
-            myProfile.shippingAddress.gstType==='CGST_SGST'?'(CGST+SGST)':'(IGST)'}}</span></p>
-        <div class="w-1/12">
+          <p class="w-2/12 text-center">
+            Quantity
+          </p>
+          <p class="w-2/12 font-semibold text-center">Subtotal</p>
+          <p class="w-2/12 font-semibold text-center">Tax<span *ngIf="myProfile.shippingAddress"
+              class="text-xs font-light">
+              {{ myProfile.shippingAddress.gstType &&
+              myProfile.shippingAddress.gstType==='CGST_SGST'?'(CGST+SGST)':'(IGST)'}}</span></p>
+          <div class="w-1/12">
+
+          </div>
 
         </div>
+        <div *ngFor="let item of formItems" class="flex items-center gap-4 border-b border-gray-300 pb-4">
+          <div class="w-5/12 flex items-center gap-x-5">
+            <img [src]="item.image" alt="Product image" class="w-[70px] object-cover rounded-xl" />
+            <div>
+              <h3 class="text-lg font-semibold">{{ item.productName +" "+ (item.size?item.size.toUpperCase():'') +" "+
+                (item.color?item.color.toUpperCase():'') }}</h3>
+              <p class="text-sm text-gray-500">₹{{ item.sp }}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 justify-center w-2/12">
+            <button type="button" (click)="item.quantity > 1 ? item.quantity = item.quantity - 1 : '';calculateOrder()"
+              class="w-[30px] h-[30px] border border-gray-300 rounded-md text-gray-600 hover:border-red-400 hover:text-red-600 hover:bg-red-50 transition duration-200">
+              -
+            </button>
+            <span class="w-6 text-center font-medium text-gray-500">{{ item.quantity }}</span>
+            <button type="button"
+              (click)="item.quantity < item.available ? item.quantity = item.quantity + 1 : '';calculateOrder()"
+              class="w-[30px] h-[30px] border border-gray-300 rounded-md text-gray-600 hover:border-green-400 hover:text-green-600 hover:bg-green-50 transition duration-200">
+              +
+            </button>
+          </div>
+          <div class="w-2/12 flex items-center justify-center">
+            <p class="font-semibold">₹{{ item.sp*item.quantity }}</p>
+          </div>
+          <div class="w-2/12 text-center">
+            <p class="text-xs text-gray-500" *ngIf="!myProfile.shippingAddress  || !myProfile.shippingAddress.gstType ">
+              Select Address</p>
+            <p class="text-sm font-semibold"
+              *ngIf="myProfile.shippingAddress && myProfile.shippingAddress.gstType && myProfile.shippingAddress.gstType==='CGST_SGST'">
+              ₹{{(item.sp*item.quantity*(item.cgst+item.sgst))/100}}<span class="text-xs font-light">
+                ({{item.cgst.toString()+'+'+item.sgst.toString()}})%</span></p>
+            <p class="text-sm font-semibold"
+              *ngIf="myProfile.shippingAddress && myProfile.shippingAddress.gstType && myProfile.shippingAddress.gstType==='IGST'">
+              ₹{{(item.sp*item.quantity*item.igst)/100}}<span class="text-xs font-light"> ({{item.igst}}%)</span></p>
 
-      </div>
-      <div *ngFor="let item of formItems" class="flex items-center gap-4 border-b border-gray-300 pb-4">
-        <div class="w-5/12 flex items-center gap-x-5">
-          <img [src]="item.image" alt="Product image" class="w-[70px] object-cover rounded-xl" />
-          <div>
-            <h3 class="text-lg font-semibold">{{ item.productName +" "+ (item.size?item.size.toUpperCase():'') +" "+
-              (item.color?item.color.toUpperCase():'') }}</h3>
-            <p class="text-sm text-gray-500">₹{{ item.sp }}</p>
+          </div>
+          <div class="w-1/12">
+            <svg width="20px" height="30px" style="cursor:pointer" (click)="removeCartItem(item)" viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M45.46 45.46 5.54 5.54 4 4 2.54 2.54 0 5.08l8.78 8.78 4.42 9.32-2.7 4.9c-.32.56-.5 1.22-.5 1.92 0 2.2 1.8 4 4 4h14.92l2.76 2.76c-1 .73-1.66 1.91-1.66 3.24 0 2.2 1.78 4 3.98 4 1.33 0 2.51-.67 3.24-1.68L42.92 48l2.54-2.54zM14.84 30c-.28 0-.5-.22-.5-.5l.06-.24L16.2 26h4.72l4 4H14.84zm16.26-4c1.5 0 2.82-.82 3.5-2.06l7.16-12.98c.16-.28.24-.62.24-.96 0-1.1-.9-2-2-2H13.08l18 18h.02zM14 36c-2.2 0-3.98 1.8-3.98 4s1.78 4 3.98 4 4-1.8 4-4-1.8-4-4-4z"
+                fill="#f00000" class="fill-000000"></path>
+              <path d="M0 0h48v48H0z" fill="none"></path>
+            </svg>
+
           </div>
         </div>
-        <div class="flex items-center gap-2 justify-center w-2/12">
-          <button type="button" (click)="item.quantity > 1 ? item.quantity = item.quantity - 1 : ''"
-            class="w-[30px] h-[30px] border border-gray-300 rounded-md text-gray-600 hover:border-red-400 hover:text-red-600 hover:bg-red-50 transition duration-200">
-            -
-          </button>
-          <span class="w-6 text-center font-medium text-gray-500">{{ item.quantity }}</span>
-          <button type="button" (click)="item.quantity < item.available ? item.quantity = item.quantity + 1 : ''" 
-            class="w-[30px] h-[30px] border border-gray-300 rounded-md text-gray-600 hover:border-green-400 hover:text-green-600 hover:bg-green-50 transition duration-200">
-            +
-          </button>
-        </div>
-        <div class="w-2/12 flex items-center justify-center">
-          <p class="font-semibold">₹{{ item.sp*item.quantity }}</p>
-        </div>
-        <div class="w-2/12 text-center">
-          <p class="text-xs text-gray-500" *ngIf="!myProfile.shippingAddress  || !myProfile.shippingAddress.gstType ">Select Address</p>
-          <p class="text-sm font-semibold"
-            *ngIf="myProfile.shippingAddress && myProfile.shippingAddress.gstType && myProfile.shippingAddress.gstType==='CGST_SGST'">
-            ₹{{(item.sp*item.quantity*(item.cgst+item.sgst))/100}}<span class="text-xs font-light">
-              ({{item.cgst.toString()+'+'+item.sgst.toString()}})%</span></p>
-          <p class="text-sm font-semibold"
-            *ngIf="myProfile.shippingAddress && myProfile.shippingAddress.gstType && myProfile.shippingAddress.gstType==='IGST'">
-            ₹{{(item.sp*item.quantity*item.igst)/100}}<span class="text-xs font-light"> ({{item.igst}}%)</span></p>
 
-        </div>
-        <div class="w-1/12">
-          <svg width="20px" height="30px" style="cursor:pointer" (click)="removeCartItem(item)" viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M45.46 45.46 5.54 5.54 4 4 2.54 2.54 0 5.08l8.78 8.78 4.42 9.32-2.7 4.9c-.32.56-.5 1.22-.5 1.92 0 2.2 1.8 4 4 4h14.92l2.76 2.76c-1 .73-1.66 1.91-1.66 3.24 0 2.2 1.78 4 3.98 4 1.33 0 2.51-.67 3.24-1.68L42.92 48l2.54-2.54zM14.84 30c-.28 0-.5-.22-.5-.5l.06-.24L16.2 26h4.72l4 4H14.84zm16.26-4c1.5 0 2.82-.82 3.5-2.06l7.16-12.98c.16-.28.24-.62.24-.96 0-1.1-.9-2-2-2H13.08l18 18h.02zM14 36c-2.2 0-3.98 1.8-3.98 4s1.78 4 3.98 4 4-1.8 4-4-1.8-4-4-4z"
-              fill="#f00000" class="fill-000000"></path>
-            <path d="M0 0h48v48H0z" fill="none"></path>
-          </svg>
-
-        </div>
       </div>
 
-    </div>
+      <div class="flex justify-between pt-5">
+        <p class="text-md font-medium">Product Total </p>
+        <p class="text-md font-medium">₹{{ this.calculatedResults.originalSubtotal }}</p>
+      </div>
 
-    <div class="flex justify-between pt-5">
+      <div class="flex justify-between pt-5">
+        <p class="text-md font-medium">Discount Applied </p>
+        <p class="text-md font-medium text-green-600 text-xs">-₹{{ this.calculatedResults.totalDiscount }}</p>
+      </div>
+
+      <div class="flex justify-between pt-5">
         <p class="text-md font-medium">Subtotal </p>
-        <p class="text-md font-medium">₹{{ cartSubTotal }}</p>
-    </div>
-    <div class="flex justify-between">
-        <p class="text-sm font-normal">Tax <span *ngIf="myProfile.shippingAddress">{{myProfile.shippingAddress.gstType &&
+        <p class="text-md font-medium">₹{{ this.calculatedResults.subTotal }}</p>
+      </div>
+      <div class="flex justify-between">
+        <p class="text-sm font-normal">Product Tax <span
+            *ngIf="myProfile.shippingAddress">{{myProfile.shippingAddress.gstType &&
             myProfile.shippingAddress.gstType==='CGST_SGST'?'(cgst+sgst)':'(igst)'}}</span></p>
-        <p class="text-sm font-normal">₹{{ cartTotalTax }}</p>
-    </div>
-     <div class="flex justify-between pt-5">
-        <p class="text-xl font-medium">Total </p>
-        <p class="text-xl font-medium">₹{{ cartSubTotal + cartTotalTax }}</p>
-    </div>
+        <p class="text-sm font-normal">₹{{ this.calculatedResults.totalItemTax }}</p>
+      </div>
 
-    <button type="submit"  class="mt-4 w-full text-white py-2 rounded disabled:cursor-not-allowed" [disabled]="orderForm.invalid"
-      [ngClass]="orderForm.valid ? 'bg-blue-600' : 'bg-blue-300'">
-      Proceed to checkout
-    </button>
+      <div class="flex justify-between pt-5">
+        <p class="text-md font-medium">Delivery Charge </p>
+        <p class="text-md font-medium">₹{{ this.calculatedResults.deliveryCharge }}</p>
+      </div>
+
+      <div class="flex justify-between">
+        <p class="text-sm font-normal">Delivery Tax </p>
+        <p class="text-sm font-normal">₹{{ this.calculatedResults.deliveryTaxAmount }}</p>
+      </div>
+
+      <div class="flex justify-between pt-5">
+        <p class="text-xl font-medium">Total </p>
+        <p class="text-xl font-medium">₹{{ this.calculatedResults.totalAmount }}</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 mt-6 max-w-lg w-full">
+        <button type="submit" [disabled]="orderForm.invalid" [ngClass]="orderForm.valid ? 'bg-blue-600' : 'bg-blue-300'"         (click)="setPaymentSource('razorpay')"
+
+          class="flex-1 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">
+          Pay Full via Razorpay ₹{{this.calculatedResults.totalAmount}}
+        </button>
+
+        <button *ngIf="myProfile.wallet.balance>0" type="submit" [disabled]="orderForm.invalid"  (click)="setPaymentSource('wallet')"
+          [ngClass]="orderForm.valid ? 'bg-green-600' : 'bg-green-300'"
+          class="flex-1  text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition">
+          From Wallet {{myProfile.wallet.balance>this.calculatedResults.totalAmount?this.calculatedResults.totalAmount:myProfile.wallet.balance}} <span *ngIf="myProfile.wallet.balance<this.calculatedResults.totalAmount">+ From Razorpay {{(this.calculatedResults.totalAmount-myProfile.wallet.balance).toFixed(2)}}</span>
+        </button>
+      </div>
     </div>
-      <ng-template class="w-full lg:w-7/12 p-4 md:border-l ps-10 border-gray-300" #noItems>
-  <p>Nothing in Cart</p>
+   <ng-template #noItems>
+  <div class="w-full lg:w-7/12 p-4  ps-10 border-gray-300">
+    <ng-container *ngIf="formItems.length === 0">
+      <p>Your cart is empty.</p>
+    </ng-container>
+
+    <ng-container *ngIf="formItems.length > 0 && myProfile.shippingAddress">
+      <p>Please select a shipping address to proceed.</p>
+    </ng-container>
+
+  </div>
 </ng-template>
   </div>
 
 </form>
 <div *ngIf="paymentDetails" class="flex flex-col items-center justify-center min-h-[93vh] bg-green-50 p-6">
-  <!-- Tick animation -->
   <div class="mb-6">
     <svg class="w-24 h-24 text-green-600" viewBox="0 0 52 52">
-      <circle
-        class="tick-circle"
-        cx="26"
-        cy="26"
-        r="25"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      />
-      <path
-        class="tick-mark"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="4"
-        d="M14 27l7 7 16-16"
-      />
+      <circle class="tick-circle" cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2" />
+      <path class="tick-mark" fill="none" stroke="currentColor" stroke-width="4" d="M14 27l7 7 16-16" />
     </svg>
   </div>
 
   <h1 class="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
   <p class="text-gray-600 mb-4">Thank you for your order. Your payment has been received.</p>
-      <p class="pb-5"><strong>Order ID: #{{ paymentDetails.razorpay_order_id }}</strong></p>
+  <p class="pb-5"><strong>Order ID: #{{ paymentDetails.razorpay_order_id }}</strong></p>
 
-  <button [routerLink]="['/']"
-    class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
->
+  <button [routerLink]="['/']" class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
     Back to Home
   </button>
 </div>

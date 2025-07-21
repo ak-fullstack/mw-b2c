@@ -41,6 +41,7 @@ groupStockByProduct(stockList: any[]) {
     const productId = product.id;
     const available = stock.available;
     const stockId = stock.id;
+    const sp=stock.sp;
     
 
     // Find or create product group
@@ -82,7 +83,8 @@ groupStockByProduct(stockList: any[]) {
       sku,
       variantId,
       images,
-      stockId
+      stockId,
+      sp
     });
   }
 

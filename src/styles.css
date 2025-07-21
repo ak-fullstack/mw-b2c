@@ -5,3 +5,14 @@
 button{
     cursor: pointer;
 }
+
+@font-face {
+  font-family: 'quantify';
+  src: url('/Quantify-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+  }
