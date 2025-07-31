@@ -28,7 +28,7 @@
   </div>
 </div> -->
 
-<div class=" text-white text-center bg-black flex items-center justify-center menubar sticky top-0">
+<div class=" text-white text-center bg-black flex items-center justify-center menubar sticky top-0 z-50">
   <div>
     <div class="text-4xl w-full">
       <p class="menu-active py-2" style="font-family:quantify !important">Motowagon</p>
@@ -50,10 +50,10 @@
     </svg>
   </a>
 
-  <a 
-    [routerLink]="['/dashboard/profile']"
+  <div
+    [routerLink]="['/cart']"
     routerLinkActive="menu-active" 
-    class="menu-inactive">
+    class="menu-inactive cursor-pointer" style="position: relative;">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
       viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
       class="size-6 transition-colors duration-200">
@@ -66,10 +66,14 @@
         .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 
         0 .375.375 0 0 1 .75 0Z" />
     </svg>
-  </a>
+          <div *ngIf="cartItems.length > 0"
+        style="position: absolute; top: -8px; right: -10px; background: #b7ff00b6; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 12px; display: flex; align-items: center; justify-content: center;">
+        {{ cartItems.length }}
+      </div>
+    </div>
 
   <a 
-    [routerLink]="['/cart']"
+    [routerLink]="['/dashboard/profile']"
     routerLinkActive="menu-active" 
     class="menu-inactive">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

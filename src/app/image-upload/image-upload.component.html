@@ -1,0 +1,28 @@
+<div
+  class="w-[50px] h-[50px] border-2 border-dashed border-gray-400 rounded-md flex items-center justify-center text-gray-500 cursor-pointer hover:border-blue-500 hover:text-blue-600"
+  (click)="triggerFileInput()"
+>
+  +
+</div>
+
+<input
+  #fileInput
+  id="imageUpload"
+  type="file"
+  (change)="onImageChange($event)"
+  hidden
+/>
+
+<div class="w-screen h-screen fixed top-0 left-0 bg-[#0000005e] flex justify-center items-center" *ngIf="showCropper">
+  <div class="bg-white rounded-md">
+    <image-cropper style="max-width:700px;max-height:700px" [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true" [aspectRatio]="1/1" format="jpeg" (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+      (loadImageFailed)="loadImageFailed()"></image-cropper>
+    <div class="flex items-center justify-center">
+      <p (click)=" this.imageChangedEvent = null;showCropper=false" class="cursor-pointer mx-4">close</p>
+      <button class="bg-blue-500 px-2 py-2 text-white rounded-md my-2 cursor-pointer"
+        (click)="cropSubmit()">Submit</button>
+    </div>
+  </div>
+</div>

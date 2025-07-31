@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ImageUploadComponent } from '../../../image-upload/image-upload.component';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule,FormsModule,ReactiveFormsModule],
+  imports: [CommonModule,FormsModule,ReactiveFormsModule,ImageUploadComponent],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
@@ -14,6 +15,7 @@ export class OrdersComponent implements OnInit {
   showDetails = false;
   selectedOrder: any;
   returnItems:any=null;
+  returnImages:any=[];
 
   constructor(private apiService:ApiService){
     
@@ -84,7 +86,7 @@ openReturnRequest(){
       this.returnItems = structuredClone(this.selectedOrder);
 }
 
-createRetrunRequest(){
+createReturnRequest(){
   const payload = {
   orderId: this.returnItems.orderId,
   reason: 'replacement',
@@ -92,7 +94,8 @@ createRetrunRequest(){
     orderItemId: item.orderItemId,
     quantity: item.quantity,
     reason: item.reason
-  }))
+  })),
+  images:this.returnImages
 };
 
 this.apiService.createReturnRequest(payload).subscribe({
@@ -103,5 +106,20 @@ this.apiService.createReturnRequest(payload).subscribe({
 
   
 }
+
+  handleImageUpload({file}: { file: File, context: any }) {
+
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+        this.apiService.uploadReturnImage(formData).subscribe(
+      (res:any) => {
+        this.returnImages.push(res.url)
+        
+      },
+      (err:any) => {
+        console.error('Upload failed', err);
+      }
+    );
+  }
 
 }

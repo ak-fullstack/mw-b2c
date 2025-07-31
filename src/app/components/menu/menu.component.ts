@@ -35,15 +35,5 @@ export class MenuComponent {
     this.loginService.show();
   }
 
-  logout(){
-    this.apiService.logout().subscribe({
-      next: (res: any) => {
-          this.loginService.updateLoginStatus(false);
-      },
-      error: (error: any) => {
-        
-      }
-    });
-  }
   
 }

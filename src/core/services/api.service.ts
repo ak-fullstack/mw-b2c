@@ -83,12 +83,14 @@ export class ApiService {
     return this.http.get(api.customer.getCustomerOrders);
   }
 
-   getWalletorderConfiramtion(orderId:any): Observable<any> {
-    return this.http.get(api.customer.walletOrderConfirmation+'/'+orderId);
+  getWalletorderConfiramtion(orderId: any): Observable<any> {
+    return this.http.get(api.customer.walletOrderConfirmation + '/' + orderId);
   }
 
 
-
+  uploadReturnImage(payload: any): Observable<any> {
+    return this.http.post(api.customer.uploadReturnImages, payload);
+  }
 
   createReturnRequest(payload: any): Observable<any> {
     return this.http.post(api.customer.requestReturn, payload)

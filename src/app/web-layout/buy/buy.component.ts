@@ -231,8 +231,8 @@ export class BuyComponent implements OnInit, OnDestroy {
   }
 
   calculateOrder() {
-    if (this.orderForm.invalid) {
-      this.orderForm.markAllAsTouched();
+    if (this.orderForm.get('shippingAddressId')?.invalid) {
+this.orderForm.get('shippingAddressId')?.markAsTouched();
       return;
     }
     const formValue = this.orderForm.value;
@@ -243,7 +243,6 @@ export class BuyComponent implements OnInit, OnDestroy {
     }));
 
     const payload = {
-      ...formValue,
       items: sanitizedItems,
       shippingState: this.myProfile?.shippingAddress?.state,
     };

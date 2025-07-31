@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { LoginService } from '../../../core/services/login.service';
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -16,4 +17,8 @@ export class DashboardLayoutComponent {
   { label: 'Stock Notifications', route: 'stock-notifications' },
 ];
 
+constructor(public loginService:LoginService)
+{
+
+}
 }

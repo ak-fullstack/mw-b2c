@@ -22,10 +22,10 @@ export class LoaderInterceptor implements HttpInterceptor {
           if (error instanceof HttpErrorResponse) {
             console.error('API Error:', error);
             if(error.error.message){
-              this.toast.show(error.error.message, 'error');
+              // this.toast.show(error.error.message, 'error');
             }
             else{
-              this.toast.show(error.message, 'error');
+              // this.toast.show(error.message, 'error');
             }
 
           }

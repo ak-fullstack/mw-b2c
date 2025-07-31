@@ -4,6 +4,7 @@ import { LoginComponent } from '../../app/components/login/login.component';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { CartService } from './cart.service';
+import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -11,7 +12,7 @@ export class LoginService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$ = this.loggedInSubject.asObservable(); // use this in components
 
-  constructor(private appRef: ApplicationRef, private injector: EnvironmentInjector, private router: Router, private cartService: CartService) {
+  constructor(private appRef: ApplicationRef, private injector: EnvironmentInjector, private router: Router, private cartService: CartService,private apiService:ApiService) {
     
     const isLoggedIn = JSON.parse(localStorage.getItem('loggedIn') || 'false');
     this.loggedInSubject.next(isLoggedIn); // initialize observable state
@@ -42,5 +43,16 @@ export class LoginService {
     this.cartService.clearCart();
   }
 }
+
+logout(){
+    this.apiService.logout().subscribe({
+      next: (res: any) => {
+          this.updateLoginStatus(false);
+      },
+      error: (error: any) => {
+        
+      }
+    });
+  }
 
 }
