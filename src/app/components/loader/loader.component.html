@@ -1,3 +1,13 @@
-<div class="h-screen w-screen flex items-center justify-center fixed top-0 left-0 bg-[#ffffff99] z-50">
-    <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#034833]"></div>
+<div
+  class="fixed inset-0 z-[1000] flex items-center justify-center bg-white/90 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-auto"
+  [class.opacity-100]="visible"
+  [class.pointer-events-none]="!visible"
+>
+  <!-- <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#034833]"></div> -->
+ <img
+    src="mw-logo.png"
+    alt="Logo"
+    class="w-15 h-15 rounded-xl animate-bounce transition-opacity duration-700 ease-in-out opacity-0"
+    [class.opacity-100]="visible"
+  />
 </div>

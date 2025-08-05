@@ -1,6 +1,6 @@
-<div *ngIf="groupedProducts.length>0" class="  min-h-screen">
+<div *ngIf="groupedProducts.length>0">
   <div class="flex flex-wrap gap-6 p-10 max-w-[1600px] mx-auto">
-    <div *ngFor="let item of groupedProducts"
+    <!-- <div *ngFor="let item of groupedProducts"
     class="w-full sm:w-5/12 md:w-1/3 lg:w-1/4 bg-gray-200 rounded-2xl p-3 shadow-md overflow-hidden flex flex-col justify-between transition-transform hover:scale-[1.02]">
     <div class="bg-white h-full rounded-xl overflow-hidden">
             <div class="w-full flex gap-2 overflow-x-auto pb-2">
@@ -74,7 +74,61 @@
 
 
     </div>
-  </div>
+  </div> -->
+    <div *ngFor="let item of groupedProducts" class="w-full text flex  justify-center pb-15 pt-5 md:py-15"
+      style="min-height: calc( 100vh - 320px );">
+      <div class="max-w-[300px]">
+
+        <div class=" border-black border-14 rounded-xl box relative ">
+          <div class="mag-image">
+            <img *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images"
+             [src]="image.imageUrl">
+          <!-- <div class=" py-3   bottom-0 text-white p-3" style="background-color: var(--moto-green)">
+            <div class="flex justify-between items-center">
+              <div>
+                <h2 class="text-xl font-semibold  truncate">
+                  {{ item.product.name }}
+                </h2>
+              </div>
+
+              <div *ngIf="item.product.has_colors" class="flex gap-2 items-center">
+                <div (click)="item.selectedColorIndex = colorIndex;item.selectedSizeIndex=0"
+                  *ngFor="let color of item.colors; let colorIndex = index"
+                  class="p-0.5 rounded-full bg-white ring-offset-1 {{checkColorOutofStock(color)?'opacity-50':''}}"
+                  [ngStyle]="colorIndex === item.selectedColorIndex ? { boxShadow: '0 0 0 1px ' + color.hexCode } : {}">
+                  <div class="w-5 h-5 rounded-full cursor-pointer" [ngStyle]="{ 'background-color': color.hexCode }">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+              <div *ngIf="item.product.has_sizes" class="flex flex-wrap gap-2">
+                <p (click)="item.selectedSizeIndex = sizeIndex"
+                  *ngFor="let size of item.colors[item.selectedColorIndex]?.sizes; let sizeIndex = index"
+                  class="w-8 h-8 rounded-md text-sm font-medium border text-gray-700 shadow text-center flex items-center justify-center cursor-pointer {{size.available<1?'opacity-20':''}}"
+                  [ngClass]="{
+              'bg-black text-white border-black': sizeIndex === item.selectedSizeIndex,
+              'bg-white border-gray-300': sizeIndex !== item.selectedSizeIndex
+            }">
+                  {{ size.label.toUpperCase() }}
+                </p>
+              </div>
+              <p class="text-xs line-clamp-3">
+                {{ item.product.description }}
+              </p>
+          </div> -->
+          </div>
+        </div>
+        <button *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].available > 0"
+          (click)="addToCart(item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex])"
+          class="w-[300px] bg-black text-white rounded-xl py-3 mt-3 font-bold text-2xl cursor-pointer buy-btn italic" [routerLink]="['/cart']">BUY</button>
+        <button *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].available < 1"
+          class="cursor-not-allowed w-[300px] bg-gray-600 text-white rounded-xl py-3 mt-3 font-bold text-2xl buy-btn italic">OUT
+          OF STOCK</button>
+
+      </div>
+    </div>
   </div>
 </div>
-  <div *ngIf="groupedProducts.length===0" class="font-bold text-4xl text-gray-500 p-10">Nothing in shop at the moment...</div>
+<div *ngIf="groupedProducts.length===0" class="font-bold text-4xl text-gray-500 p-10">Nothing in shop at the moment...
+</div>

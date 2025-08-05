@@ -1,5 +1,5 @@
-<div class="w-screen h-screen fixed top-0 left-0 bg-[#000000b0] flex justify-center items-center p-3">
-     <div *ngIf="signIn" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12 relative">
+<div class=" w-screen h-screen fixed top-0 left-0 bg-[#000000b0] flex justify-center items-center p-3 z-100">
+     <div *ngIf="signIn" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12 relative rounded-md">
       <div class="absolute top-0 right-0 p-3 cursor-pointer " (click)="closeLogin()">
              <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M6.2253 4.81108C5.83477 4.42056 5.20161 4.42056 4.81108 4.81108C4.42056 5.20161 4.42056 5.83477 4.81108 6.2253L10.5858 12L4.81114 17.7747C4.42062 18.1652 4.42062 18.7984 4.81114 19.1889C5.20167 19.5794 5.83483 19.5794 6.22535 19.1889L12 13.4142L17.7747 19.1889C18.1652 19.5794 18.7984 19.5794 19.1889 19.1889C19.5794 18.7984 19.5794 18.1652 19.1889 17.7747L13.4142 12L19.189 6.2253C19.5795 5.83477 19.5795 5.20161 19.189 4.81108C18.7985 4.42056 18.1653 4.42056 17.7748 4.81108L12 10.5858L6.2253 4.81108Z" fill="currentColor"/></svg>
 
@@ -41,7 +41,6 @@
                 class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
                 Login
               </button>
-              <!-- <a href="#" class="text-sm text-gray-500 hover:underline block mt-2">Forgot Password</a> -->
             </form>
 
             <div class="pt-4 text-sm text-gray-600">
@@ -51,7 +50,7 @@
         </div>
       </div>
   
-      <div *ngIf="resetPassword" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12">
+      <div *ngIf="resetPassword" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12 rounded-md">
         <div class="w-full max-w-md text-center">
           <h2 class="text-2xl font-bold mb-2 pb-4">Reset Password</h2>
     
@@ -103,7 +102,6 @@
                 class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
                 Verify OTP
               </button>
-              <!-- <a href="#" class="text-sm text-gray-500 hover:underline block mt-2">Forgot Password</a> -->
             </form>
             <form *ngIf="otpVerified" [formGroup]="newPasswordForm" (ngSubmit)="changePassword()" class="space-y-4">
               <div class="relative">
@@ -149,7 +147,7 @@
       </div>
 
 
-      <div *ngIf="register" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12">
+      <div *ngIf="register" class="max-w-[500px] w-full bg-white flex justify-center items-center px-6 py-12 rounded-md">
         <div class="w-full max-w-md text-center">
           <h2 class="text-2xl font-bold mb-2 pb-4">Register</h2>
     
@@ -201,7 +199,6 @@
                 class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold rounded-full transition">
                 Verify OTP
               </button>
-              <!-- <a href="#" class="text-sm text-gray-500 hover:underline block mt-2">Forgot Password</a> -->
             </form>
             <form *ngIf="otpVerified" [formGroup]="newPasswordForm" (ngSubmit)="createCustomer()" class="space-y-4">
               <div class="relative">

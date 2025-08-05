@@ -1,12 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
 :root {
   --moto-green: #a1d71ab6;
 }
 
-button{
-    cursor: pointer;
+html,
+body {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+}
+
+/* Chrome, Edge, Safari */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+button {
+  cursor: pointer;
 }
 
 @font-face {
@@ -16,15 +36,10 @@ button{
   font-style: normal;
 }
 
-.primary-green{
+.primary-green {
   color: var(--moto-green);
 }
 
-.green-bg{
-  background-color:var(--moto-green);
+.green-bg {
+  background-color: var(--moto-green);
 }
-
-
-body {
-    font-family: 'Poppins', sans-serif;
-  }

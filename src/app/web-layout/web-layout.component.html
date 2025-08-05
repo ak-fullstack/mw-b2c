@@ -1,2 +1,13 @@
-<app-menu ></app-menu>
-<router-outlet></router-outlet>
+<!-- <app-menu ></app-menu>
+<router-outlet></router-outlet> -->
+
+
+<div class="w-screen gradient relative">
+        <app-menu  style="position: sticky;top:0;z-index:10" ></app-menu>
+        <div class="max-w-[1200px] mx-auto">
+            <div >
+                            <router-outlet></router-outlet>
+            </div>
+            <app-footer></app-footer>
+        </div>
+</div>

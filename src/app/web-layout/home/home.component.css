@@ -1,0 +1,25 @@
+.box {
+
+    background: linear-gradient(to bottom, #ff7e5f 30%, #feb47b 100%);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden; /* Clips inner content */
+}
+
+.mag-image{
+    transition: .5s;
+}
+
+.mag-image:hover{
+    transform: scale(105%);
+    cursor:grab;
+}
+
+.buy-btn{
+    transition: .3s;
+}
+
+.buy-btn:hover{
+    background-color: #A3D71A;
+    color:black;
+}

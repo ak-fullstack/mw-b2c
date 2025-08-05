@@ -30,7 +30,8 @@ export class BuyComponent implements OnInit, OnDestroy {
 
 
   orderForm = new FormGroup({
-    shippingName: new FormControl('', [Validators.required]),
+    shippingFirstName: new FormControl('', [Validators.required]),
+    shippingLastName: new FormControl('', [Validators.required]),
     shippingPhoneNumber: new FormControl('', [
       Validators.required,
       Validators.minLength(10),
@@ -88,7 +89,8 @@ export class BuyComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.myProfile = res;
         this.orderForm.patchValue({
-          shippingName: this.myProfile.fullName,
+          shippingFirstName: this.myProfile.firstName,
+          shippingLastName: this.myProfile.lastName,
           shippingPhoneNumber: this.myProfile.phoneNumber,
           shippingEmailId: this.myProfile.emailId
         })
@@ -223,16 +225,16 @@ export class BuyComponent implements OnInit, OnDestroy {
     this.apiService.getWalletorderConfiramtion(orderId).subscribe({
       next: (res) => {
         this.paymentDetails = res;
-          this.paymentSuccess = true;
-          this.cartService.clearCart();
-       }
+        this.paymentSuccess = true;
+        this.cartService.clearCart();
+      }
     })
 
   }
 
   calculateOrder() {
     if (this.orderForm.get('shippingAddressId')?.invalid) {
-this.orderForm.get('shippingAddressId')?.markAsTouched();
+      this.orderForm.get('shippingAddressId')?.markAsTouched();
       return;
     }
     const formValue = this.orderForm.value;

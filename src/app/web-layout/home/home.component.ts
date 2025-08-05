@@ -3,10 +3,11 @@ import { ApiService } from '../../../core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CartService } from '../../../core/services/cart.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule,ReactiveFormsModule,FormsModule],
+  imports: [CommonModule,ReactiveFormsModule,FormsModule,RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
