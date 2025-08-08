@@ -75,53 +75,34 @@
 
     </div>
   </div> -->
+
+
     <div *ngFor="let item of groupedProducts" class="w-full text flex  justify-center pb-15 pt-5 md:py-15"
       style="min-height: calc( 100vh - 320px );">
       <div class="max-w-[300px]">
 
-        <div class=" border-black border-14 rounded-xl box relative ">
+        <div class=" border-black border-10 rounded-xl box relative ">
           <div class="mag-image">
-            <img *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images"
-             [src]="image.imageUrl">
-          <!-- <div class=" py-3   bottom-0 text-white p-3" style="background-color: var(--moto-green)">
-            <div class="flex justify-between items-center">
-              <div>
-                <h2 class="text-xl font-semibold  truncate">
-                  {{ item.product.name }}
-                </h2>
+            <div class="carousel-container relative">
+              <div class="carousel-images" [style.transform]="'translateX(-' + (item.currentIndex || 0) * 100 + '%)'">
+                <img *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images"
+                  [src]="image.imageUrl" class="carousel-image" />
               </div>
 
-              <div *ngIf="item.product.has_colors" class="flex gap-2 items-center">
-                <div (click)="item.selectedColorIndex = colorIndex;item.selectedSizeIndex=0"
-                  *ngFor="let color of item.colors; let colorIndex = index"
-                  class="p-0.5 rounded-full bg-white ring-offset-1 {{checkColorOutofStock(color)?'opacity-50':''}}"
-                  [ngStyle]="colorIndex === item.selectedColorIndex ? { boxShadow: '0 0 0 1px ' + color.hexCode } : {}">
-                  <div class="w-5 h-5 rounded-full cursor-pointer" [ngStyle]="{ 'background-color': color.hexCode }">
-                  </div>
+              <div *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images.length>1" class="dots absolute z-100 bottom-0 mx-auto w-full flex justify-center py-2">
+                <div class="bg-[#ffffff3f] rounded-full">
+                  <span
+                  *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images; let i = index"
+                  [class.active]="i === (item.currentIndex || 0)" (click)="goToSlide(item, i)"></span>
                 </div>
               </div>
-
             </div>
-              <div *ngIf="item.product.has_sizes" class="flex flex-wrap gap-2">
-                <p (click)="item.selectedSizeIndex = sizeIndex"
-                  *ngFor="let size of item.colors[item.selectedColorIndex]?.sizes; let sizeIndex = index"
-                  class="w-8 h-8 rounded-md text-sm font-medium border text-gray-700 shadow text-center flex items-center justify-center cursor-pointer {{size.available<1?'opacity-20':''}}"
-                  [ngClass]="{
-              'bg-black text-white border-black': sizeIndex === item.selectedSizeIndex,
-              'bg-white border-gray-300': sizeIndex !== item.selectedSizeIndex
-            }">
-                  {{ size.label.toUpperCase() }}
-                </p>
-              </div>
-              <p class="text-xs line-clamp-3">
-                {{ item.product.description }}
-              </p>
-          </div> -->
           </div>
         </div>
         <button *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].available > 0"
           (click)="addToCart(item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex])"
-          class="w-[300px] bg-black text-white rounded-xl py-3 mt-3 font-bold text-2xl cursor-pointer buy-btn italic" [routerLink]="['/cart']">BUY</button>
+          class="w-[300px] bg-black text-white rounded-xl py-3 mt-3 font-bold text-2xl cursor-pointer buy-btn italic"
+          [routerLink]="['/cart']">BUY</button>
         <button *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex].available < 1"
           class="cursor-not-allowed w-[300px] bg-gray-600 text-white rounded-xl py-3 mt-3 font-bold text-2xl buy-btn italic">OUT
           OF STOCK</button>

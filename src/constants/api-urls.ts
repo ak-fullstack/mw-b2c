@@ -22,7 +22,8 @@ export const api = {
     requestReturn: url + '/returns/request-return',
     calculateOrder: url + '/orders/calculate-order',
     walletOrderConfirmation:url+'/orders/success',
-    uploadReturnImages:url+'/google-cloud-storage/upload-return-image'
+    uploadReturnImages:url+'/google-cloud-storage/upload-return-image',
+    orderInvoice:url+'/pdf-generation/order-invoice'
 
   },
   product: {

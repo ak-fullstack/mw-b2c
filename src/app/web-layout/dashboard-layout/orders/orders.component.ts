@@ -3,6 +3,7 @@ import { ApiService } from '../../../../core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageUploadComponent } from '../../../image-upload/image-upload.component';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-orders',
@@ -120,6 +121,25 @@ this.apiService.createReturnRequest(payload).subscribe({
         console.error('Upload failed', err);
       }
     );
+  }
+
+
+    downloadOrderInvoice() {
+    const payload={orderId:this.selectedOrder.id}
+    this.apiService.downloadOrderInvoice(payload).subscribe({
+      next: (res: HttpResponse<Blob>) => {
+        const blob = new Blob([res.body!], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'order-report.pdf';
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => { }
+    })
   }
 
 }

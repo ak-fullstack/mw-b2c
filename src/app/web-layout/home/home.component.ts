@@ -20,6 +20,8 @@ export class HomeComponent implements OnInit {
     constructor(private apiService: ApiService,private cartService :CartService) { }
   ngOnInit(): void {
     this.getLatestStockPerProduct();
+     
+
   }
 
   getLatestStockPerProduct() {
@@ -91,6 +93,11 @@ groupStockByProduct(stockList: any[]) {
 
   this.groupedProducts=grouped;
   console.log(this.groupedProducts);
+
+     this.groupedProducts.forEach((item) => {
+    item.currentIndex = 0;
+    this.startAutoScroll();
+  });
   
   
 }
@@ -112,6 +119,34 @@ addToCart(selectedItem: any) {
   const outOfStock = color.sizes.every((size: any) => size.available < 1);
   return outOfStock;
 }
+
+  currentIndex = 0;
+  autoScrollInterval: any;
+  startAutoScroll() {
+    this.autoScrollInterval = setInterval(() => {
+      const totalImages = this.getImageCount();
+      
+      this.currentIndex = (this.currentIndex + 1) % totalImages;
+      this.goToSlide(this.groupedProducts[0],this.currentIndex);
+    }, 3000); // Change image every 3 seconds
+  }
+
+  getImageCount(): number {
+    // Replace this with your actual logic to count images
+    const item = this.groupedProducts[0]; // Example: first product
+    const images = item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images || [];
+    return images.length;
+  }
+
+goToSlide(item: any, index: number) {
+  item.currentIndex = index;
+}
+
+  ngOnDestroy() {
+    if (this.autoScrollInterval) {
+      clearInterval(this.autoScrollInterval);
+    }
+  }
  
 
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { api } from '../../constants/api-urls';
 
@@ -94,5 +94,12 @@ export class ApiService {
 
   createReturnRequest(payload: any): Observable<any> {
     return this.http.post(api.customer.requestReturn, payload)
+  }
+
+   downloadOrderInvoice(payload: any): Observable<HttpResponse<Blob>> {
+    return this.http.post(api.customer.orderInvoice, payload, {
+      responseType: 'blob',
+      observe: 'response'
+    });
   }
 }

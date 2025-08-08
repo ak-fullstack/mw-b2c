@@ -89,6 +89,8 @@
         </div>
     </div>
     <div>
+                <button (click)="downloadOrderInvoice()" class="p-3 py-1 font-medium text-gray-600 border border-gray-300">Download Invoice</button>
+
         <button class="p-3 py-1 font-medium text-gray-600 border border-gray-300">Having Issues?</button>
         <button *ngIf="selectedOrder.returnAvailable" class="ms-2 bg-black text-white py-1 px-2 font-medium rounded-sm " (click)="openReturnRequest()">Request
             a Return</button>
