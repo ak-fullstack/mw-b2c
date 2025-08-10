@@ -16,7 +16,6 @@ export class OrdersComponent implements OnInit {
   showDetails = false;
   selectedOrder: any;
   returnItems:any=null;
-  returnImages:any=[];
 
   constructor(private apiService:ApiService){
     
@@ -41,6 +40,7 @@ export class OrdersComponent implements OnInit {
   backToList() {
     this.selectedOrder = null;
     this.showDetails = false;
+    this.returnItems=null;
   }
 
   getStatusClass(status: string): string {
@@ -83,20 +83,25 @@ removeItem(index: number) {
   this.returnItems.items.splice(index, 1);
 }
 
-openReturnRequest(){
-      this.returnItems = structuredClone(this.selectedOrder);
+openReturnRequest() {
+  this.returnItems = {
+    ...structuredClone(this.selectedOrder), // clone all outer keys
+    items: this.selectedOrder.items.map((item:any) => ({
+      ...structuredClone(item), // deep clone each item
+      images: [] // add images array
+    }))
+  };
 }
 
 createReturnRequest(){
   const payload = {
   orderId: this.returnItems.orderId,
-  reason: 'replacement',
   items: this.returnItems.items.map((item:any) => ({
     orderItemId: item.orderItemId,
     quantity: item.quantity,
-    reason: item.reason
+    reason: item.reason,
+    images:item.images
   })),
-  images:this.returnImages
 };
 
 this.apiService.createReturnRequest(payload).subscribe({
@@ -108,13 +113,13 @@ this.apiService.createReturnRequest(payload).subscribe({
   
 }
 
-  handleImageUpload({file}: { file: File, context: any }) {
+  handleImageUpload({file}: { file: File, context: any },item:any) {
 
     const formData = new FormData();
     formData.append('file', file, file.name);
         this.apiService.uploadReturnImage(formData).subscribe(
       (res:any) => {
-        this.returnImages.push(res.url)
+        item.images.push(res.url)
         
       },
       (err:any) => {

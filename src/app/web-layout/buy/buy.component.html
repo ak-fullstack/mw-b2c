@@ -88,14 +88,14 @@
       </div>
     </div>
   </div>
-  <div class="w-full lg:w-7/12 p-4 md:border-l ps-10 border-gray-300">
+  <div class="w-full lg:w-7/12 md:p-4 md:border-l md:ps-10 border-gray-300">
 
     <div *ngIf="formItems.length>0 && orderForm.get('shippingAddressId')?.valid && calculatedResults && myProfile.wallet; else noItems">
       <div class="w-full space-y-4">
         <div class="flex items-center gap-4 border-b border-gray-200 pb-4">
-          <h3 class="text-lg font-semibold w-5/12">Product</h3>
+          <h3 class="text-lg font-semibold w-5/12">Cart Items</h3>
 
-          <p class="w-2/12 text-center">
+          <!-- <p class="w-2/12 text-center">
             Quantity
           </p>
           <p class="w-2/12 font-semibold text-center">Subtotal</p>
@@ -105,19 +105,19 @@
               myProfile.shippingAddress.gstType==='CGST_SGST'?'(CGST+SGST)':'(IGST)'}}</span></p>
           <div class="w-1/12">
 
-          </div>
+          </div> -->
 
         </div>
-        <div *ngFor="let item of formItems" class="flex items-center gap-4 border-b border-gray-300 pb-4">
-          <div class="w-5/12 flex items-center gap-x-5">
+        <div *ngFor="let item of formItems" class="flex flex-wrap items-center gap-4 border-b border-gray-300 pb-4">
+          <div class="w-full md:w-5/12 flex items-center gap-x-5 ">
             <img [src]="item.image" alt="Product image" class="w-[70px] object-cover rounded-xl" />
             <div>
               <h3 class="text-lg font-semibold">{{ item.productName +" "+ (item.size?item.size.toUpperCase():'') +" "+
                 (item.color?item.color.toUpperCase():'') }}</h3>
-              <p class="text-sm text-gray-500">₹{{ item.sp }}</p>
+              <p class="text-sm text-gray-500"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ item.sp }}</p>
             </div>
           </div>
-          <div class="flex items-center gap-2 justify-center w-2/12">
+          <div class="flex items-center gap-2 justify-center w-4/12 md:w-2/12">
             <button type="button" (click)="item.quantity > 1 ? item.quantity = item.quantity - 1 : '';calculateOrder()"
               class="w-[30px] h-[30px] border border-gray-300 rounded-md text-gray-600 hover:border-red-400 hover:text-red-600 hover:bg-red-50 transition duration-200">
               -
@@ -130,18 +130,18 @@
             </button>
           </div>
           <div class="w-2/12 flex items-center justify-center">
-            <p class="font-semibold">₹{{ item.sp*item.quantity }}</p>
+            <p class="font-semibold"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ item.sp*item.quantity }}</p>
           </div>
           <div class="w-2/12 text-center">
             <p class="text-xs text-gray-500" *ngIf="!myProfile.shippingAddress  || !myProfile.shippingAddress.gstType ">
               Select Address</p>
             <p class="text-sm font-semibold"
               *ngIf="myProfile.shippingAddress && myProfile.shippingAddress.gstType && myProfile.shippingAddress.gstType==='CGST_SGST'">
-              ₹{{(item.sp*item.quantity*(item.cgst+item.sgst))/100}}<span class="text-xs font-light">
+              <span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{(item.sp*item.quantity*(item.cgst+item.sgst))/100}}<span class="text-xs font-light">
                 ({{item.cgst.toString()+'+'+item.sgst.toString()}})%</span></p>
             <p class="text-sm font-semibold"
               *ngIf="myProfile.shippingAddress && myProfile.shippingAddress.gstType && myProfile.shippingAddress.gstType==='IGST'">
-              ₹{{(item.sp*item.quantity*item.igst)/100}}<span class="text-xs font-light"> ({{item.igst}}%)</span></p>
+              <span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{(item.sp*item.quantity*item.igst)/100}}<span class="text-xs font-light"> ({{item.igst}}%)</span></p>
 
           </div>
           <div class="w-1/12">
@@ -160,51 +160,51 @@
 
       <div class="flex justify-between pt-5">
         <p class="text-md font-medium">Product Total </p>
-        <p class="text-md font-medium">₹{{ this.calculatedResults.originalSubtotal }}</p>
+        <p class="text-md font-medium"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ this.calculatedResults.originalSubtotal }}</p>
       </div>
 
       <div class="flex justify-between pt-5">
         <p class="text-md font-medium">Discount Applied </p>
-        <p class="text-md font-medium text-green-600 text-xs">-₹{{ this.calculatedResults.totalDiscount }}</p>
+        <p class="text-md font-medium text-green-600 text-xs">-<span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ this.calculatedResults.totalDiscount }}</p>
       </div>
 
       <div class="flex justify-between pt-5">
         <p class="text-md font-medium">Subtotal </p>
-        <p class="text-md font-medium">₹{{ this.calculatedResults.subTotal }}</p>
+        <p class="text-md font-medium"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ this.calculatedResults.subTotal }}</p>
       </div>
       <div class="flex justify-between">
         <p class="text-sm font-normal">Product Tax <span
             *ngIf="myProfile.shippingAddress">{{myProfile.shippingAddress.gstType &&
             myProfile.shippingAddress.gstType==='CGST_SGST'?'(cgst+sgst)':'(igst)'}}</span></p>
-        <p class="text-sm font-normal">₹{{ this.calculatedResults.totalItemTax }}</p>
+        <p class="text-sm font-normal"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ this.calculatedResults.totalItemTax }}</p>
       </div>
 
       <div class="flex justify-between pt-5">
         <p class="text-md font-medium">Delivery Charge </p>
-        <p class="text-md font-medium">₹{{ this.calculatedResults.deliveryCharge }}</p>
+        <p class="text-md font-medium"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ this.calculatedResults.deliveryCharge }}</p>
       </div>
 
       <div class="flex justify-between">
         <p class="text-sm font-normal">Delivery Tax </p>
-        <p class="text-sm font-normal">₹{{ this.calculatedResults.deliveryTaxAmount }}</p>
+        <p class="text-sm font-normal"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ this.calculatedResults.deliveryTaxAmount }}</p>
       </div>
 
       <div class="flex justify-between pt-5">
         <p class="text-xl font-medium">Total </p>
-        <p class="text-xl font-medium">₹{{ this.calculatedResults.totalAmount }}</p>
+        <p class="text-xl font-medium"><span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{ this.calculatedResults.totalAmount }}</p>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-4 mt-6 max-w-lg w-full">
+      <div class="flex flex-col sm:flex-row gap-4 mt-6  w-full">
         <button type="submit" [disabled]="orderForm.invalid" [ngClass]="orderForm.valid ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-300'"         (click)="setPaymentSource('razorpay')"
 
           class="flex-1 text-white font-semibold py-3 rounded-lg  transition">
-          Pay Full via Razorpay ₹{{this.calculatedResults.totalAmount}}
+          Pay Full via Razorpay <span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{this.calculatedResults.totalAmount}}
         </button>
 
         <button *ngIf="myProfile.wallet.balance>0" type="submit" [disabled]="orderForm.invalid"  (click)="setPaymentSource('wallet')"
           [ngClass]="orderForm.valid ? 'bg-green-600' : 'bg-green-300'"
           class="flex-1  text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition">
-          From Wallet {{myProfile.wallet.balance>this.calculatedResults.totalAmount?this.calculatedResults.totalAmount:myProfile.wallet.balance}} <span *ngIf="myProfile.wallet.balance<this.calculatedResults.totalAmount">+ From Razorpay {{(this.calculatedResults.totalAmount-myProfile.wallet.balance).toFixed(2)}}</span>
+          From Wallet <span style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">₹ </span>{{myProfile.wallet.balance>this.calculatedResults.totalAmount?this.calculatedResults.totalAmount:myProfile.wallet.balance}} <span *ngIf="myProfile.wallet.balance<this.calculatedResults.totalAmount">+ From Razorpay {{(this.calculatedResults.totalAmount-myProfile.wallet.balance).toFixed(2)}}</span>
         </button>
       </div>
     </div>

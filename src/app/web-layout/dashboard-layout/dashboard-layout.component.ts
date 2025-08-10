@@ -14,7 +14,7 @@ export class DashboardLayoutComponent {
   sidebarMenu = [
   { label: 'Profile', route: 'profile' },
   { label: 'Orders', route: 'orders' },
-  { label: 'Stock Notifications', route: 'stock-notifications' },
+  // { label: 'Stock Notifications', route: 'stock-notifications' },
 ];
 
 constructor(public loginService:LoginService)

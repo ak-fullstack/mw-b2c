@@ -64,7 +64,8 @@
         </div>
         <div class="flex justify-between py-2">
             <div class="font-semibold">Total:</div>
-            <div class="font-semibold">{{selectedOrder.totalAmount}} <span class="text-sm text-gray-500">(includes {{selectedOrder.totalTax}} tax)</span></div>
+            <div class="font-semibold">{{selectedOrder.totalAmount}} <span class="text-sm text-gray-500">(includes
+                    {{selectedOrder.totalTax}} tax)</span></div>
         </div>
         <div class="flex justify-between py-2">
             <div class="font-medium">Payment method:</div>
@@ -89,10 +90,12 @@
         </div>
     </div>
     <div>
-                <button (click)="downloadOrderInvoice()" class="p-3 py-1 font-medium text-gray-600 border border-gray-300">Download Invoice</button>
+        <button (click)="downloadOrderInvoice()"
+            class="p-3 py-1 font-medium text-gray-600 border border-gray-300 me-2">Download Invoice</button>
 
         <button class="p-3 py-1 font-medium text-gray-600 border border-gray-300">Having Issues?</button>
-        <button *ngIf="selectedOrder.returnAvailable" class="ms-2 bg-black text-white py-1 px-2 font-medium rounded-sm " (click)="openReturnRequest()">Request
+        <button *ngIf="selectedOrder.returnAvailable" class="ms-2 bg-black text-white py-1 px-2 font-medium rounded-sm "
+            (click)="openReturnRequest()">Request
             a Return</button>
     </div>
 </div>
@@ -103,7 +106,7 @@
     </button>
     <h4 class="text-lg font-semibold mb-4">ORDER DETAILS</h4>
 
-    <div *ngFor="let item of returnItems.items; let i = index" class="flex items-start gap-4 py-3 border-b">
+    <div *ngFor="let item of returnItems.items; let i = index" class="flex items-start gap-4 py-3 border-b flex-wrap">
         <img [src]="item.imageUrl" alt="{{ item.productName }}" class="w-16 h-16 object-cover rounded " />
 
         <!-- Product Details and Controls -->
@@ -140,15 +143,18 @@
                 </svg>
             </div>
         </div>
-    </div>
-            <p class="pt-5 font-medium">Upload Images</p>
-     <div class="flex pt-5">
+        <div class="w-full">
+                <p class="pt-5 font-medium">Upload Images</p>
+    <div class="flex pt-5">
 
-                      <ng-container *ngIf="returnImages.length> 0;">
-                        <img *ngFor="let im of returnImages" class="w-[50px] rounded-md me-2" [src]="im" />
-                      </ng-container>
-                      <app-image-upload
-                        (imageCroppedFile)="handleImageUpload($event)"></app-image-upload>
-                    </div>
-    <button (click)="createReturnRequest()" class="block bg-black text-white py-1 px-2 font-medium rounded-sm mt-5 ms-auto" >Create Request</button>
+        <ng-container *ngIf="item.images && item.images.length> 0;">
+            <img *ngFor="let im of item.images" class="w-[50px] rounded-md me-2" [src]="im" [(ngModel)]="item.images[i]"/>
+        </ng-container>
+        <app-image-upload (imageCroppedFile)="handleImageUpload($event,item)"></app-image-upload>
+    </div>
+        </div>
+    </div>
+
+    <button (click)="createReturnRequest()"
+        class="block bg-black text-white py-1 px-2 font-medium rounded-sm mt-5 ms-auto">Create Request</button>
 </div>

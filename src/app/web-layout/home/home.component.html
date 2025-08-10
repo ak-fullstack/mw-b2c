@@ -82,11 +82,11 @@
       <div class="max-w-[300px]">
 
         <div class=" border-black border-10 rounded-xl box relative ">
-          <div class="mag-image">
+          <div>
             <div class="carousel-container relative">
               <div class="carousel-images" [style.transform]="'translateX(-' + (item.currentIndex || 0) * 100 + '%)'">
                 <img *ngFor="let image of item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images"
-                  [src]="image.imageUrl" class="carousel-image" />
+                  [src]="image.imageUrl" class="carousel-image mag-image" />
               </div>
 
               <div *ngIf="item.colors[item.selectedColorIndex]?.sizes[item.selectedSizeIndex]?.images.length>1" class="dots absolute z-100 bottom-0 mx-auto w-full flex justify-center py-2">

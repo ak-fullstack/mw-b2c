@@ -1,6 +1,6 @@
-<div *ngIf="profile" class="p-6 max-w-4xl mx-auto">
+<div *ngIf="profile" class="flex flex-wrap max-w-4xl mx-auto px-3">
   <!-- Profile Card -->
-  <div class="bg-white shadow-md rounded-xl p-6 flex gap-6 items-center">
+  <div class="w-full bg-white shadow-md rounded-xl p-6 flex flex-wrap gap-x-6 items-center">
     <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-semibold text-gray-600">
       <span *ngIf="!profile.profileImageUrl">{{ profile.firstName[0] }}{{ profile.lastName[0] }}</span>
       <img *ngIf="profile.profileImageUrl" [src]="profile.profileImageUrl" alt="Profile" class="w-full h-full object-cover rounded-full" />
@@ -10,12 +10,17 @@
       <h2 class="text-2xl font-semibold text-gray-800">{{ profile.fullName }}</h2>
       <p class="text-gray-600">{{ profile.emailId }}</p>
       <p class="text-gray-600">{{ profile.phoneNumber }}</p>
-      <p class="text-sm primary-green font-medium mt-1">{{ profile.role }}</p>
+      <!-- <p class="text-sm primary-green font-medium mt-1">{{ profile.role }}</p> -->
     </div>
   </div>
 
+   <div class="w-full bg-white shadow-md rounded-xl p-6  items-center mt-3">
+    <p class="pb-1 text-gray-600">Wallet Balance</p>
+    <P class="text-4xl font-semibold"><span style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">₹</span>{{profile.wallet.balance}}</P>
+  </div>
+
   <!-- Address Section -->
-  <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="w-full mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Billing Address -->
     <div class="bg-gray-50 border border-gray-200 p-5 rounded-lg">
       <h3 class="text-lg font-semibold text-gray-800 mb-3">Billing Address</h3>
@@ -28,4 +33,5 @@
       <p class="text-gray-700">{{ profile.shippingAddress.fullAddress }}</p>
     </div>
   </div>
+
 </div>
